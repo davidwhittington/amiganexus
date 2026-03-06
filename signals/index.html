@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Tower — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">SIGNAL TOWER — AmigaNexus — STATION 01 — INCOMING TRANSMISSIONS</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 01 &nbsp;/&nbsp; INCOMING TRANSMISSIONS</div>
+        <div class="section-title">SIGNAL TOWER</div>
+        <div class="section-desc">News, hardware releases, OS updates, and community dispatches from across the Amiga galaxy.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <span class="live-dot"></span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--wb-grey);letter-spacing:2px;">LIVE FEED — TRANSMISSIONS UPDATED MANUALLY IN PHASE 1</span>
+      </div>
+
+      <!-- News posts -->
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2026.02.18</span>
+          <span class="tag tag-seafoam">FPGA</span>
+        </div>
+        <div class="signal-post-title">MiSTer Amiga Core v1.6 Released — AGA Improvements</div>
+        <div class="signal-post-body">
+          The MiSTer Amiga (Minimig) core has received a significant update with improved AGA compatibility, fixed HAM8 rendering artefacts, and better timing accuracy for ECS demoscene productions. The update also introduces experimental support for the CD32 FMV module in emulated form. Update via the MiSTer Downloader script or manually from the GitHub releases page.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2026.01.30</span>
+          <span class="tag tag-orange">HARDWARE</span>
+        </div>
+        <div class="signal-post-title">Checkmate A1500 Mini — New Production Batch Open</div>
+        <div class="signal-post-body">
+          The Checkmate A1500 Mini has reopened orders for a new production batch. This run includes an updated PCB revision with improved grounding for the A1200 motherboard variant and a new side panel option. Orders ship Q2 2026. Check checkmate1500.com for pricing and delivery estimates.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2026.01.14</span>
+          <span class="tag tag-seafoam">OS UPDATE</span>
+        </div>
+        <div class="signal-post-title">AmigaOS 3.2.3 Patch Released by Hyperion</div>
+        <div class="signal-post-body">
+          Hyperion Entertainment has shipped AmigaOS 3.2.3, a maintenance patch addressing memory handling issues in the 64-bit FAT driver, a fix for a rare crash in Intuition when closing windows with active gadgets, and an updated AmigaGuide reader. Existing 3.2 or 3.2.2 users can apply the patch; new installations should use the full 3.2.3 release. Available from Hyperion directly and through authorised resellers including AmigaKit.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2025.12.21</span>
+          <span class="tag tag-orange">FPGA</span>
+        </div>
+        <div class="signal-post-title">Vampire V4 SA+ Firmware 2.14 — SAGA Graphics Enhancements</div>
+        <div class="signal-post-body">
+          The Apollo Team has released Vampire V4 SA+ firmware 2.14. This update brings refined SAGA chunky modes with improved palette accuracy, a faster blitter path for 2D operations, and fixes for a timing regression introduced in 2.12 affecting some WHDLoad titles. The update is available via the Apollo Update Tool in Apollo OS.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2025.12.06</span>
+          <span class="tag">SCENE</span>
+        </div>
+        <div class="signal-post-title">Revision 2026 Demo Compo Entries Open — Amiga Category Returns</div>
+        <div class="signal-post-body">
+          Revision 2026 (April, Saarbrücken) has confirmed the Amiga OCS and AGA demo categories will run as separate compos this year following strong turnout in 2025. Entry submission opens January 2026 via the Revision party website. The party will also run a dedicated Amiga hardware exhibition area.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2025.11.19</span>
+          <span class="tag tag-orange">HARDWARE</span>
+        </div>
+        <div class="signal-post-title">AmigaKit Restocks A1200 Keyboard PCBs</div>
+        <div class="signal-post-body">
+          AmigaKit has restocked the A1200 keyboard replacement PCB — a modern reproduction that solves the notorious membrane failure issue on aging A1200 units. Compatible with original keycaps. Also back in stock: A500 power supply replacements and A1200 trapdoor RAM expansion boards.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2025.10.31</span>
+          <span class="tag tag-seafoam">COMMUNITY</span>
+        </div>
+        <div class="signal-post-title">English Amiga Board Passes 250,000 Posts</div>
+        <div class="signal-post-body">
+          The English Amiga Board — the world's largest English-language Amiga forum — has surpassed 250,000 posts across all sub-forums. The milestone reflects the continued health of the community. EAB moderators report a 20% increase in new registrations in 2025 compared to 2024, driven partly by FPGA and emulation interest from a new generation of users discovering the platform.
+        </div>
+      </div>
+
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">2025.10.04</span>
+          <span class="tag tag-orange">HARDWARE</span>
+        </div>
+        <div class="signal-post-title">Individual Computers Ships ACA1234 Rev 2 — 128MB RAM Support</div>
+        <div class="signal-post-body">
+          Jens Schönfeld's Individual Computers has shipped the ACA1234 Rev 2 accelerator for the Amiga 1200. The revision doubles maximum RAM to 128MB Fast via a revised memory controller, adds a real-time clock, and improves compatibility with Zorro expansion via the ACA1234's optional carrier board. Available now from icomp.de and authorised retailers.
+        </div>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/signals/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>8 TRANSMISSIONS LOGGED — SIGNAL STRONG</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warp Terminal — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<style>
+  .warp-entry {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.15s;
+  }
+  .warp-entry:last-child { border-bottom: none; }
+  .warp-entry:hover { background: rgba(94,203,170,0.03); }
+  .warp-entry-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--atom-seafoam);
+    letter-spacing: 1px;
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+  .warp-entry-desc {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 12px;
+    color: var(--wb-grey);
+    flex: 1;
+    line-height: 1.4;
+  }
+  .warp-entry-url {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: rgba(94,203,170,0.4);
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .warp-section {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border-light);
+    margin-bottom: 16px;
+  }
+  .warp-section-header {
+    background: rgba(0,55,120,0.3);
+    border-bottom: 1px solid rgba(94,203,170,0.15);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .warp-section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--atom-seafoam);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .warp-section-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-grey);
+    letter-spacing: 1px;
+    margin-left: auto;
+  }
+  .jump-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid rgba(255,94,91,0.4);
+    color: var(--atom-coral);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .jump-btn:hover {
+    background: rgba(255,94,91,0.1);
+    border-color: var(--atom-coral);
+  }
+  .jump-btn::before { content: '⟩⟩'; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--blue" style="background:radial-gradient(circle at 35% 35%, #CC7AEE 0%, #9944CC 30%, #6622AA 60%, #330066 100%);box-shadow:inset -15px -12px 25px rgba(0,0,0,0.5),0 0 30px rgba(153,68,204,0.2);"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">WARP TERMINAL — AmigaNexus — STATION 10 — EXTERNAL SECTOR GATEWAY</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 10 &nbsp;/&nbsp; EXTERNAL SECTOR GATEWAY</div>
+        <div class="section-title">WARP TERMINAL</div>
+        <div class="section-desc">All exits from Nexus space require Warp initiation. Curated destinations across the known Amiga galaxy — vetted, described, and ready for jump.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="terminal-block" style="margin-bottom:24px;">
+        <span class="prompt">WARP:1/terminal&gt; </span><strong>WARP PROTOCOL ACTIVE</strong><br>
+        <span class="comment">— All JUMP buttons initiate a 2-second Warp sequence before opening the external destination.</span><br>
+        <span class="comment">— Destinations open in a new tab. Your Nexus session is maintained.</span><br>
+        <span class="comment">— All links are vetted as of 2026-03. Report dead links to the Signal Tower.</span>
+      </div>
+
+      <!-- Hardware Suppliers -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-orange">SECTOR</span>
+          <div class="warp-section-title">Hardware Suppliers — New Production</div>
+          <div class="warp-section-count">6 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">AmigaKit</div>
+          <div class="warp-entry-desc">Primary new hardware retailer. Accelerators, OS licences, peripherals, cables.</div>
+          <div class="warp-entry-url">amigakit.com</div>
+          <a href="https://amigakit.com" class="jump-btn" data-warp="AmigaKit" data-warp-url="https://amigakit.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Individual Computers</div>
+          <div class="warp-entry-desc">ACA accelerators, ZorRAM, Catweasel — Jens Schönfeld's engineering operation.</div>
+          <div class="warp-entry-url">icomp.de</div>
+          <a href="https://icomp.de" class="jump-btn" data-warp="Individual Computers" data-warp-url="https://icomp.de">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Checkmate A1500 Mini</div>
+          <div class="warp-entry-desc">Modern desktop case for A500/A1200 boards. Orders open periodically.</div>
+          <div class="warp-entry-url">checkmate1500.com</div>
+          <a href="https://checkmate1500.com" class="jump-btn" data-warp="Checkmate A1500 Mini" data-warp-url="https://checkmate1500.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">A-EON Technology</div>
+          <div class="warp-entry-desc">AmigaOne X5000 and X1000 — native AmigaOS 4.x PowerPC hardware.</div>
+          <div class="warp-entry-url">a-eon.com</div>
+          <a href="https://a-eon.com" class="jump-btn" data-warp="A-EON Technology" data-warp-url="https://a-eon.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">ACube Systems</div>
+          <div class="warp-entry-desc">Sam460 PowerPC boards running AmigaOS 4.1. Compact, affordable OS4.</div>
+          <div class="warp-entry-url">acube-systems.biz</div>
+          <a href="https://acube-systems.biz" class="jump-btn" data-warp="ACube Systems" data-warp-url="https://acube-systems.biz">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Elbox Computer</div>
+          <div class="warp-entry-desc">Mediator PCI busboards and FastATA controllers for Zorro-equipped Amigas.</div>
+          <div class="warp-entry-url">elbox.com</div>
+          <a href="https://elbox.com" class="jump-btn" data-warp="Elbox Computer" data-warp-url="https://elbox.com">JUMP</a>
+        </div>
+      </div>
+
+      <!-- Used Markets -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-orange">SECTOR</span>
+          <div class="warp-section-title">Used Hardware Marketplaces</div>
+          <div class="warp-section-count">3 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Amibay</div>
+          <div class="warp-entry-desc">Dedicated Amiga buy/sell/trade community. Fully moderated, reputation-tracked.</div>
+          <div class="warp-entry-url">amibay.com</div>
+          <a href="https://amibay.com" class="jump-btn" data-warp="Amibay" data-warp-url="https://amibay.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">EAB Marketplace</div>
+          <div class="warp-entry-desc">English Amiga Board buy/sell classifieds. Community-vetted sellers.</div>
+          <div class="warp-entry-url">eab.abime.net</div>
+          <a href="https://eab.abime.net/forumdisplay.php?f=25" class="jump-btn" data-warp="EAB Marketplace" data-warp-url="https://eab.abime.net/forumdisplay.php?f=25">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">eBay — Amiga</div>
+          <div class="warp-entry-desc">Large general marketplace. Use with caution — verify sellers carefully.</div>
+          <div class="warp-entry-url">ebay.com</div>
+          <a href="https://ebay.com/sch/i.html?_nkw=amiga" class="jump-btn" data-warp="eBay Amiga Search" data-warp-url="https://ebay.com/sch/i.html?_nkw=amiga">JUMP</a>
+        </div>
+      </div>
+
+      <!-- Emulation -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-seafoam">SECTOR</span>
+          <div class="warp-section-title">Emulation Software</div>
+          <div class="warp-section-count">5 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">WinUAE</div>
+          <div class="warp-entry-desc">The most accurate Amiga emulator. Windows only. Toni Wilen.</div>
+          <div class="warp-entry-url">winuae.net</div>
+          <a href="https://winuae.net" class="jump-btn" data-warp="WinUAE" data-warp-url="https://winuae.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">FS-UAE</div>
+          <div class="warp-entry-desc">Cross-platform UAE with a modern launcher and game database integration.</div>
+          <div class="warp-entry-url">fs-uae.net</div>
+          <a href="https://fs-uae.net" class="jump-btn" data-warp="FS-UAE" data-warp-url="https://fs-uae.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">vAmiga</div>
+          <div class="warp-entry-desc">Native macOS Amiga emulator. Cycle-accurate A500/A500+ emulation.</div>
+          <div class="warp-entry-url">dirkwhoffmann.github.io</div>
+          <a href="https://dirkwhoffmann.github.io/vAmiga/" class="jump-btn" data-warp="vAmiga" data-warp-url="https://dirkwhoffmann.github.io/vAmiga/">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">AmiBerry</div>
+          <div class="warp-entry-desc">Raspberry Pi / ARM optimised UAE. Full-speed on Pi 4 and Pi 5.</div>
+          <div class="warp-entry-url">github.com/BlitterStudio</div>
+          <a href="https://github.com/BlitterStudio/amiberry" class="jump-btn" data-warp="AmiBerry" data-warp-url="https://github.com/BlitterStudio/amiberry">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">WHDLoad</div>
+          <div class="warp-entry-desc">Install 3,000+ Amiga games to hard disk. Essential for WHDLoad setups.</div>
+          <div class="warp-entry-url">whdload.de</div>
+          <a href="https://whdload.de" class="jump-btn" data-warp="WHDLoad" data-warp-url="https://whdload.de">JUMP</a>
+        </div>
+      </div>
+
+      <!-- FPGA -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-seafoam">SECTOR</span>
+          <div class="warp-section-title">FPGA Hardware &amp; Resources</div>
+          <div class="warp-section-count">4 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">MiSTer FPGA</div>
+          <div class="warp-entry-desc">MiSTer project home. Documentation, cores, update scripts, community.</div>
+          <div class="warp-entry-url">misterfpga.org</div>
+          <a href="https://misterfpga.org" class="jump-btn" data-warp="MiSTer FPGA" data-warp-url="https://misterfpga.org">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Apollo Core / Vampire</div>
+          <div class="warp-entry-desc">Vampire V4 standalone and accelerator cards. Apollo 68080 FPGA processor.</div>
+          <div class="warp-entry-url">apollo-core.com</div>
+          <a href="https://apollo-core.com" class="jump-btn" data-warp="Apollo Core" data-warp-url="https://apollo-core.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">FPGAArcade</div>
+          <div class="warp-entry-desc">Replay 1 and Replay 2 boards with Amiga cores. Mike Stirling's project.</div>
+          <div class="warp-entry-url">fpgaarcade.com</div>
+          <a href="https://fpgaarcade.com" class="jump-btn" data-warp="FPGAArcade" data-warp-url="https://fpgaarcade.com">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">MiSTer GitHub</div>
+          <div class="warp-entry-desc">Core repository and development hub. All Minimig (Amiga) core releases here.</div>
+          <div class="warp-entry-url">github.com/MiSTer-devel</div>
+          <a href="https://github.com/MiSTer-devel" class="jump-btn" data-warp="MiSTer GitHub" data-warp-url="https://github.com/MiSTer-devel">JUMP</a>
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag">SECTOR</span>
+          <div class="warp-section-title">Community Forums &amp; Boards</div>
+          <div class="warp-section-count">5 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">English Amiga Board</div>
+          <div class="warp-entry-desc">The largest English Amiga forum. Hardware, software, buy/sell, news, demos.</div>
+          <div class="warp-entry-url">eab.abime.net</div>
+          <a href="https://eab.abime.net" class="jump-btn" data-warp="English Amiga Board" data-warp-url="https://eab.abime.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Amiga.org</div>
+          <div class="warp-entry-desc">Community forum and news covering all Amiga branches.</div>
+          <div class="warp-entry-url">amiga.org</div>
+          <a href="https://amiga.org" class="jump-btn" data-warp="Amiga.org" data-warp-url="https://amiga.org">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">AmigaWorld.net</div>
+          <div class="warp-entry-desc">News and discussion covering OS4, MorphOS, and classic Amiga.</div>
+          <div class="warp-entry-url">amigaworld.net</div>
+          <a href="https://amigaworld.net" class="jump-btn" data-warp="AmigaWorld.net" data-warp-url="https://amigaworld.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Reddit — r/amiga</div>
+          <div class="warp-entry-desc">Active subreddit. Show-and-tell, questions, project reveals.</div>
+          <div class="warp-entry-url">reddit.com/r/amiga</div>
+          <a href="https://reddit.com/r/amiga" class="jump-btn" data-warp="r/amiga" data-warp-url="https://reddit.com/r/amiga">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Amibay</div>
+          <div class="warp-entry-desc">Also hosts a community forum alongside the marketplace.</div>
+          <div class="warp-entry-url">amibay.com</div>
+          <a href="https://amibay.com" class="jump-btn" data-warp="Amibay Community" data-warp-url="https://amibay.com">JUMP</a>
+        </div>
+      </div>
+
+      <!-- YouTube -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-coral">SECTOR</span>
+          <div class="warp-section-title">YouTube Channels</div>
+          <div class="warp-section-count">6 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Amiga Bill</div>
+          <div class="warp-entry-desc">Hardware reviews, community news, FPGA updates. The primary Amiga creator.</div>
+          <div class="warp-entry-url">youtube.com/@AmigaBill</div>
+          <a href="https://youtube.com/@AmigaBill" class="jump-btn" data-warp="Amiga Bill" data-warp-url="https://youtube.com/@AmigaBill">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">RetroManCave</div>
+          <div class="warp-entry-desc">High-production hardware restoration and history. Strong Amiga content.</div>
+          <div class="warp-entry-url">youtube.com/@RetroManCave</div>
+          <a href="https://youtube.com/@RetroManCave" class="jump-btn" data-warp="RetroManCave" data-warp-url="https://youtube.com/@RetroManCave">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">8-Bit Show And Tell</div>
+          <div class="warp-entry-desc">Retro programming in depth. Amiga chip architecture and demo coding.</div>
+          <div class="warp-entry-url">youtube.com/@8_BitShowAndTell</div>
+          <a href="https://youtube.com/@8_BitShowAndTell" class="jump-btn" data-warp="8-Bit Show And Tell" data-warp-url="https://youtube.com/@8_BitShowAndTell">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">LGR</div>
+          <div class="warp-entry-desc">Lazy Game Reviews — meticulous Amiga hardware and software coverage.</div>
+          <div class="warp-entry-url">youtube.com/@LGR</div>
+          <a href="https://youtube.com/@LGR" class="jump-btn" data-warp="LGR" data-warp-url="https://youtube.com/@LGR">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">NTSC-J Amiga</div>
+          <div class="warp-entry-desc">Technically detailed hardware teardowns and accelerator testing.</div>
+          <div class="warp-entry-url">youtube.com/@NTSCJamiga</div>
+          <a href="https://youtube.com/@NTSCJamiga" class="jump-btn" data-warp="NTSC-J Amiga" data-warp-url="https://youtube.com/@NTSCJamiga">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Jan Beta</div>
+          <div class="warp-entry-desc">Systematic hardware repair and restoration. Learn to fix your own hardware.</div>
+          <div class="warp-entry-url">youtube.com/@JanBeta</div>
+          <a href="https://youtube.com/@JanBeta" class="jump-btn" data-warp="Jan Beta" data-warp-url="https://youtube.com/@JanBeta">JUMP</a>
+        </div>
+      </div>
+
+      <!-- Archives -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag tag-yellow">SECTOR</span>
+          <div class="warp-section-title">Archives &amp; Software</div>
+          <div class="warp-section-count">5 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Aminet</div>
+          <div class="warp-entry-desc">40,000+ Amiga files. The primary and definitive Amiga software archive.</div>
+          <div class="warp-entry-url">aminet.net</div>
+          <a href="https://aminet.net" class="jump-btn" data-warp="Aminet" data-warp-url="https://aminet.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Pouet.net</div>
+          <div class="warp-entry-desc">Demo scene production database. Filter by Amiga OCS or AGA platform.</div>
+          <div class="warp-entry-url">pouet.net</div>
+          <a href="https://pouet.net" class="jump-btn" data-warp="Pouet.net" data-warp-url="https://pouet.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Demozoo</div>
+          <div class="warp-entry-desc">Structured demo scene archive with group and party metadata.</div>
+          <div class="warp-entry-url">demozoo.org</div>
+          <a href="https://demozoo.org" class="jump-btn" data-warp="Demozoo" data-warp-url="https://demozoo.org">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Amiga Magazine Rack</div>
+          <div class="warp-entry-desc">Scanned issues of Amiga Format, CU Amiga, Amiga Power, and more.</div>
+          <div class="warp-entry-url">amr.abime.net</div>
+          <a href="https://amr.abime.net" class="jump-btn" data-warp="Amiga Magazine Rack" data-warp-url="https://amr.abime.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Internet Archive — Amiga</div>
+          <div class="warp-entry-desc">Disk images, magazine scans, game manuals. Play in-browser via UAE.</div>
+          <div class="warp-entry-url">archive.org</div>
+          <a href="https://archive.org/details/softwarelibrary_amiga" class="jump-btn" data-warp="Internet Archive Amiga" data-warp-url="https://archive.org/details/softwarelibrary_amiga">JUMP</a>
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div class="warp-section">
+        <div class="warp-section-header">
+          <span class="tag">SECTOR</span>
+          <div class="warp-section-title">Events &amp; Gatherings</div>
+          <div class="warp-section-count">3 DESTINATIONS</div>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Revision Party</div>
+          <div class="warp-entry-desc">World's largest demoparty. Amiga demo compos. Annual — Saarbrücken, Germany.</div>
+          <div class="warp-entry-url">revision-party.net</div>
+          <a href="https://revision-party.net" class="jump-btn" data-warp="Revision Party" data-warp-url="https://revision-party.net">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">VCF — Vintage Computer Festival</div>
+          <div class="warp-entry-desc">Global vintage computer events with strong Amiga presence and swap meets.</div>
+          <div class="warp-entry-url">vcfed.org</div>
+          <a href="https://vcfed.org" class="jump-btn" data-warp="VCF" data-warp-url="https://vcfed.org">JUMP</a>
+        </div>
+        <div class="warp-entry">
+          <div class="warp-entry-name">Hyperion Entertainment</div>
+          <div class="warp-entry-desc">AmigaOS 3.2 and 4.x developer. OS licences, patches, and announcements.</div>
+          <div class="warp-entry-url">hyperion-entertainment.com</div>
+          <a href="https://hyperion-entertainment.com" class="jump-btn" data-warp="Hyperion Entertainment" data-warp-url="https://hyperion-entertainment.com">JUMP</a>
+        </div>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/warp-terminal/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>37 DESTINATIONS CHARTED — PORTAL ACTIVE</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

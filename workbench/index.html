@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workbench Workshop — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--blue"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">WORKBENCH WORKSHOP — AmigaNexus — STATION 08 — ENGINEERING BAY</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 08 &nbsp;/&nbsp; ENGINEERING &amp; MAINTENANCE BAY</div>
+        <div class="section-title">WORKBENCH WORKSHOP</div>
+        <div class="section-desc">AmigaOS versions, Workbench customisation, networking, accelerator cards, and developing for the platform.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- AmigaOS Today -->
+      <div class="subhead">AmigaOS TODAY</div>
+      <div class="card-grid-2">
+
+        <div class="data-card featured-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">AmigaOS 3.2 / 3.2.2</div>
+              <div class="data-card-subtitle">HYPERION ENTERTAINMENT &nbsp;/&nbsp; CLASSIC HARDWARE</div>
+            </div>
+            <span class="tag tag-seafoam" style="margin-left:auto;">CURRENT</span>
+          </div>
+          <div class="data-card-body">
+            <p>The most significant classic AmigaOS update in decades. AmigaOS 3.2 (2021) and 3.2.2 (2022) run on all OCS/ECS/AGA Amiga hardware from A500 to A4000. Key additions: 64-bit FAT filesystem, USB HID support via Poseidon, updated TCP/IP stack, numerous bug fixes, and modern icon styling.</p>
+            <p>If you're running a real Amiga or an emulated one seriously, upgrade to 3.2.2. It's the definitive classic Amiga OS.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://www.hyperion-entertainment.com" class="warp-btn warp-btn-sm" data-warp="Hyperion Entertainment" data-warp-url="https://www.hyperion-entertainment.com">WARP TO HYPERION</a>
+            <a href="https://amigakit.com" class="warp-btn-ghost" data-warp="AmigaKit — buy OS 3.2" data-warp-url="https://amigakit.com">BUY AT AMIGAKIT</a>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">AmigaOS 4.1 Final Edition</div>
+              <div class="data-card-subtitle">POWERPC &nbsp;/&nbsp; A-EON / ACUBE HARDWARE</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>AmigaOS 4.x is the direct descendant of the classic OS, running on PowerPC hardware. Full preemptive multitasking, modern filesystem support, USB, networking, and a rich software ecosystem. Runs on AmigaOne X5000, Sam460, and Pegasos boards.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://www.hyperion-entertainment.com" class="warp-btn warp-btn-sm" data-warp="AmigaOS 4.1" data-warp-url="https://www.hyperion-entertainment.com">WARP</a>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">AROS</div>
+              <div class="data-card-subtitle">OPEN SOURCE &nbsp;/&nbsp; x86, ARM, 68k</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>AROS (Amiga Research OS) is an open-source AmigaOS-compatible operating system. Runs natively on x86 PCs, ARM boards, and as a hosted environment on Linux. Used in the Vampire (Apollo) standalone as a base for Apollo OS.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://aros.sourceforge.io" class="warp-btn warp-btn-sm" data-warp="AROS" data-warp-url="https://aros.sourceforge.io">WARP</a>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">MorphOS</div>
+              <div class="data-card-subtitle">POWERPC &nbsp;/&nbsp; MAC G4/G5, EFIKA</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>MorphOS is an AmigaOS-compatible system running on G4 and G5 PowerPC hardware (repurposed Mac Minis, Power Mac G4 towers). Polished, modern, and commercially developed. Cheaper entry point to PPC Amiga than OS4 hardware.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://morphos-team.net" class="warp-btn warp-btn-sm" data-warp="MorphOS" data-warp-url="https://morphos-team.net">WARP</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Workbench Essentials -->
+      <div class="subhead">WORKBENCH ESSENTIALS</div>
+      <div class="card-grid-3">
+
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">MUI</div><div class="data-card-subtitle">MAGIC USER INTERFACE</div></div></div>
+          <div class="data-card-body">
+            <p>MUI is the standard GUI framework for Amiga software development. Most modern and classic Amiga programs use it. Install MUI 3.8 (freeware) or MUI 5.0 for the best results on classic hardware. Available on Aminet.</p>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">Directory Opus 5</div><div class="data-card-subtitle">FILE MANAGER</div></div></div>
+          <div class="data-card-body">
+            <p>Magellan — Directory Opus 5 — replaces the Workbench entirely with a dual-pane file manager and configurable button banks. The most powerful Workbench shell enhancement ever made for the Amiga. Now freeware.</p>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">Scalos</div><div class="data-card-subtitle">WORKBENCH REPLACEMENT</div></div></div>
+          <div class="data-card-body">
+            <p>A drop-in Workbench replacement with a much-improved icon engine, background image support, and modern file handling. Open source. Works on classic hardware with modest RAM.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Networking -->
+      <div class="subhead">NETWORKING YOUR AMIGA</div>
+      <table class="data-table">
+        <thead><tr><th>SOLUTION</th><th>HARDWARE REQ</th><th>SPEED</th><th>NOTES</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#fff;">Plipbox</strong></td>
+            <td>Parallel port</td>
+            <td>~100KB/s</td>
+            <td>DIY Ethernet adapter using parallel port. Free design, Arduino-based. Slowest but no hardware required beyond a cable.</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">X-Surf 100</strong></td>
+            <td>Zorro II/III (A2000/A3000/A4000)</td>
+            <td>10Mbit</td>
+            <td>Dedicated Ethernet card. Fastest solution for Zorro-equipped machines. Available from Individual Computers.</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">RapidRoad USB</strong></td>
+            <td>Clock port (A1200)</td>
+            <td>USB FS</td>
+            <td>USB host adapter for A1200 clock port. Add USB Ethernet dongles for networking on A1200.</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">Roadshow TCP/IP</strong></td>
+            <td>Software only</td>
+            <td>N/A</td>
+            <td>The modern TCP/IP stack for classic AmigaOS. Required for internet and network access. Commercial product from APC&amp;TCP.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Accelerators -->
+      <div class="subhead">ACCELERATOR CARDS BY MODEL</div>
+      <table class="data-table">
+        <thead><tr><th>AMIGA</th><th>ACCELERATOR</th><th>CPU</th><th>MAX RAM</th></tr></thead>
+        <tbody>
+          <tr><td>A500</td><td>TF536 (TerribleFire)</td><td>68030 @ 50MHz</td><td>128MB Fast</td></tr>
+          <tr><td>A500</td><td>ACA500plus</td><td>68020 @ 28MHz</td><td>8MB Fast</td></tr>
+          <tr><td>A1200</td><td>Blizzard 1260</td><td>68060 @ 50MHz</td><td>128MB Fast</td></tr>
+          <tr><td>A1200</td><td>ACA1234</td><td>68040 @ 40MHz</td><td>128MB Fast</td></tr>
+          <tr><td>A1200</td><td>Vampire V4</td><td>Apollo 68080 FPGA</td><td>512MB</td></tr>
+          <tr><td>A4000</td><td>Cyberstorm PPC</td><td>PPC 604e + 68060</td><td>128MB Fast</td></tr>
+          <tr><td>A4000</td><td>Phase5 Blizzard 2604</td><td>PPC 604 @ 200MHz</td><td>256MB Fast</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Development -->
+      <div class="subhead">DEVELOP FOR AMIGA</div>
+      <div class="card-grid-2">
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">AMOS Professional</div><div class="data-card-subtitle">BEGINNER-FRIENDLY BASIC</div></div></div>
+          <div class="data-card-body">
+            <p>AMOS Professional is a BASIC-like language with built-in sprite, screen, and sound commands designed specifically for Amiga game development. Accessible to beginners, powerful enough for commercial games. Available on Aminet. AMOS Factory maintains an active community.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">C / Assembly</div><div class="data-card-subtitle">NATIVE DEVELOPMENT</div></div></div>
+          <div class="data-card-body">
+            <p>VBCC and GCC port for m68k compile C programs for classic Amiga. For assembly, VASM is the standard modern assembler. Cross-develop on modern machines and transfer via ADF or networking. The EAB programming forum is an excellent resource.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/workbench/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>ENGINEERING BAY ONLINE — OS 3.2.2 RECOMMENDED</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

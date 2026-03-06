@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emulation Lab — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--teal"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">EMULATION LAB — AmigaNexus — STATION 07 — SIMULATION POD</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 07 &nbsp;/&nbsp; SIMULATION RESEARCH POD</div>
+        <div class="section-title">EMULATION LAB</div>
+        <div class="section-desc">Run any Amiga, on any platform, with cycle-accurate fidelity. No hardware required.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Emulator grid -->
+      <div class="subhead">CHOOSE YOUR EMULATOR</div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>EMULATOR</th>
+            <th>PLATFORM</th>
+            <th>DIFFICULTY</th>
+            <th>ACCURACY</th>
+            <th>BEST FOR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#fff;">WinUAE</strong></td>
+            <td>Windows only</td>
+            <td><span class="tag tag-coral">EXPERT</span></td>
+            <td><span class="tag tag-seafoam">EXCELLENT</span></td>
+            <td>Power users, maximum config control</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">FS-UAE</strong></td>
+            <td>Windows / macOS / Linux</td>
+            <td><span class="tag tag-orange">MODERATE</span></td>
+            <td><span class="tag tag-seafoam">EXCELLENT</span></td>
+            <td>Cross-platform, community configs</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">vAmiga</strong></td>
+            <td>macOS native</td>
+            <td><span class="tag tag-seafoam">EASY</span></td>
+            <td><span class="tag tag-seafoam">VERY GOOD</span></td>
+            <td>Mac users, clean UI, fast setup</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">AmiBerry</strong></td>
+            <td>Raspberry Pi / ARM</td>
+            <td><span class="tag tag-seafoam">EASY</span></td>
+            <td><span class="tag tag-seafoam">VERY GOOD</span></td>
+            <td>Dedicated Pi Amiga box</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">Amiga Forever</strong></td>
+            <td>Windows (commercial)</td>
+            <td><span class="tag tag-seafoam">EASIEST</span></td>
+            <td><span class="tag">GOOD</span></td>
+            <td>Beginners — legal ROMs included</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">AROS</strong></td>
+            <td>x86 / ARM / others</td>
+            <td><span class="tag tag-orange">MODERATE</span></td>
+            <td><span class="tag">COMPATIBLE</span></td>
+            <td>Open-source AmigaOS-like OS</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fff;">RetroArch</strong></td>
+            <td>Any platform</td>
+            <td><span class="tag tag-seafoam">EASY</span></td>
+            <td><span class="tag">BASIC</span></td>
+            <td>Casual gaming, controller input</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- WinUAE -->
+      <div class="subhead">WINUAE — THE GOLD STANDARD</div>
+      <div class="card-grid-2">
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">WinUAE</div>
+              <div class="data-card-subtitle">WINDOWS ONLY &nbsp;/&nbsp; TONI WILEN</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>The most accurate and fully-featured Amiga emulator in existence. WinUAE emulates every Amiga model from A1000 to A4000, all chip sets (OCS/ECS/AGA/AAA), all CPU variants, and an enormous range of expansion hardware.</p>
+            <p>The learning curve is steep — the configuration dialog has hundreds of options — but no other emulator matches its depth or accuracy.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://winuae.net" class="warp-btn warp-btn-sm" data-warp="WinUAE" data-warp-url="https://winuae.net">DOWNLOAD</a>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">FS-UAE</div>
+              <div class="data-card-subtitle">WINDOWS / macOS / LINUX &nbsp;/&nbsp; FRODE SOLHEIM</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>Built on the WinUAE/UAE core but wrapped in a modern, cross-platform launcher. FS-UAE Launcher includes a built-in game database, community configuration sharing, and a cleaner setup experience than raw WinUAE.</p>
+            <p>The best choice for most users who aren't on Windows-only workflows.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://fs-uae.net" class="warp-btn warp-btn-sm" data-warp="FS-UAE" data-warp-url="https://fs-uae.net">DOWNLOAD</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- vAmiga + AmiBerry -->
+      <div class="subhead">macOS &amp; RASPBERRY PI</div>
+      <div class="card-grid-2">
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">vAmiga</div>
+              <div class="data-card-subtitle">macOS NATIVE &nbsp;/&nbsp; DIRK HOFFMANN</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>A ground-up native macOS Amiga emulator — not a port. Clean SwiftUI interface, built-in debugger, cycle-accurate emulation. Focuses on A500 and A500+ accuracy. Excellent for Mac users who want a first-class native experience.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://dirkwhoffmann.github.io/vAmiga/" class="warp-btn warp-btn-sm" data-warp="vAmiga" data-warp-url="https://dirkwhoffmann.github.io/vAmiga/">WARP</a>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">AmiBerry</div>
+              <div class="data-card-subtitle">RASPBERRY PI / ARM &nbsp;/&nbsp; MICK GULLEY</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>Optimised UAE derivative for Raspberry Pi and ARM boards. Runs full-speed on Pi 4 and Pi 5 with HDMI output. The fastest path to a dedicated standalone Amiga box using commodity hardware. Pre-built RetroPie images include AmiBerry.</p>
+            <p><strong>Best Pi models:</strong> Pi 4 (4GB) or Pi 5 for best performance.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://github.com/BlitterStudio/amiberry" class="warp-btn warp-btn-sm" data-warp="AmiBerry on GitHub" data-warp-url="https://github.com/BlitterStudio/amiberry">WARP</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kickstart ROM Guide -->
+      <div class="subhead">KICKSTART ROM GUIDE</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>VERSION</th><th>YEAR</th><th>CHIPSET</th><th>NOTES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Kickstart 1.2</td><td>1986</td><td>OCS</td><td>A1000/A500 original. Some early software requires this.</td></tr>
+          <tr><td>Kickstart 1.3</td><td>1987</td><td>OCS</td><td>Most common OCS ROM. Best compatibility for OCS/ECS games.</td></tr>
+          <tr><td>Kickstart 2.04</td><td>1991</td><td>ECS</td><td>A500+/A600. Introduced the new look Workbench.</td></tr>
+          <tr><td>Kickstart 3.0</td><td>1992</td><td>AGA</td><td>A1200/A4000 launch ROM. AGA chipset support.</td></tr>
+          <tr><td>Kickstart 3.1</td><td>1993</td><td>AGA</td><td>Most common AGA ROM. Stable, widely compatible.</td></tr>
+          <tr><td>Kickstart 3.2</td><td>2021</td><td>AGA</td><td>Hyperion's modern release. Significant bug fixes, 64-bit FAT, USB support.</td></tr>
+          <tr><td>Kickstart 3.2.2</td><td>2022</td><td>AGA</td><td>Latest classic ROM. Recommended for all modern setups.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="terminal-block">
+        <span class="prompt">NEXUS:1/emulation/roms&gt; </span><strong>LEGAL ROM SOURCING</strong><br>
+        <span class="comment">— Kickstart ROMs are copyrighted by Cloanto (classic) and Hyperion (3.x).</span><br>
+        <span class="comment">— Legal options: Amiga Forever (Cloanto) includes licensed ROM set.</span><br>
+        <span class="comment">— AmigaKit sells AmigaOS 3.2 licences which include the 3.2 ROM.</span><br>
+        <span class="comment">— Dumping ROMs from hardware you own is generally considered fair use.</span>
+      </div>
+
+      <!-- WHDLoad -->
+      <div class="subhead">WHDLOAD — GAMES FROM HDD</div>
+      <div class="data-card">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">WHDLoad</div>
+            <div class="data-card-subtitle">whdload.de &nbsp;/&nbsp; INSTALL GAMES TO HARD DISK</div>
+          </div>
+        </div>
+        <div class="data-card-body">
+          <p>WHDLoad installs floppy-based Amiga games and demos to hard disk or SD card, eliminating the need to swap floppies and often fixing compatibility issues with accelerated machines. Over 3,000 titles are supported. An essential companion to any serious Amiga emulation setup.</p>
+          <p>Each game gets a "slave" install file. Point WHDLoad at the slave, press play.</p>
+        </div>
+        <div class="data-card-footer">
+          <a href="https://whdload.de" class="warp-btn warp-btn-sm" data-warp="WHDLoad" data-warp-url="https://whdload.de">WARP TO WHDLOAD</a>
+        </div>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/emulation/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>7 EMULATORS INDEXED — SIMULATION POD ONLINE</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

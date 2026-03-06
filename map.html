@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galactic Map — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/main.css">
+<style>
+  .map-wb-content {
+    padding: 0;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .map-intro {
+    padding: 16px 24px 12px;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(94,203,170,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .map-intro-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--atom-seafoam);
+    letter-spacing: 3px;
+  }
+  .map-intro-hint {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-grey);
+    letter-spacing: 2px;
+  }
+  #galactic-map {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+  }
+  /* Info panel */
+  .map-info-panel {
+    position: absolute;
+    top: 58px; right: 0;
+    width: 240px;
+    background: rgba(6, 12, 30, 0.97);
+    border: 1px solid var(--wb-grey);
+    border-right: none;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+    transform: translateX(100%);
+    transition: transform 0.2s cubic-bezier(0.25,0.8,0.25,1);
+    pointer-events: none;
+    z-index: 20;
+  }
+  .map-info-panel.visible {
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .map-info-titlebar {
+    background: var(--wb-blue);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 2px solid #003888;
+  }
+  .map-info-gadget {
+    width: 12px; height: 12px;
+    background: var(--wb-grey);
+    border: 1px solid #888;
+    border-right-color: #444;
+    border-bottom-color: #444;
+  }
+  .map-info-wintitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: white;
+    letter-spacing: 1px;
+    flex: 1;
+    text-align: center;
+  }
+  .map-info-body { padding: 14px; }
+  .map-info-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-orange);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .map-info-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--wb-white);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .map-info-desc {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 12px;
+    color: var(--wb-grey);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .map-info-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .map-info-dock-btn {
+    display: block;
+    width: 100%;
+    background: var(--wb-orange);
+    border: none;
+    padding: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #111;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .map-info-dock-btn:hover { background: #FFB830; }
+
+  /* Station hover highlight */
+  .station-group { cursor: pointer; }
+  .station-group .station-pulse {
+    animation: map-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes map-pulse {
+    0%, 100% { opacity: 0.4; r: 18; }
+    50% { opacity: 0.7; r: 22; }
+  }
+  .station-group:hover .station-pulse { animation: map-pulse-hover 0.8s ease-in-out infinite; }
+  @keyframes map-pulse-hover {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .lane { animation: lane-flow 4s linear infinite; }
+  @keyframes lane-flow { to { stroke-dashoffset: -60; } }
+  .lane-fast { animation: lane-flow 2s linear infinite; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet"></div>
+
+<!-- Corner bursts -->
+<svg class="corner-burst tl" viewBox="0 0 80 80" fill="none">
+  <line x1="0" y1="0" x2="60" y2="60" stroke="#FF8800" stroke-width="1"/>
+  <line x1="15" y1="0" x2="60" y2="45" stroke="#5ECBAA" stroke-width="0.7"/>
+  <line x1="0" y1="15" x2="45" y2="60" stroke="#5ECBAA" stroke-width="0.7"/>
+  <circle cx="0" cy="0" r="3" fill="#FF8800"/>
+</svg>
+<svg class="corner-burst tr" viewBox="0 0 80 80" fill="none">
+  <line x1="0" y1="0" x2="60" y2="60" stroke="#FF8800" stroke-width="1"/>
+  <line x1="15" y1="0" x2="60" y2="45" stroke="#5ECBAA" stroke-width="0.7"/>
+  <line x1="0" y1="15" x2="45" y2="60" stroke="#5ECBAA" stroke-width="0.7"/>
+  <circle cx="0" cy="0" r="3" fill="#FF8800"/>
+</svg>
+
+<div class="wb-page-wrap" style="max-width:1200px;">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">GALACTIC MAP — AmigaNexus — NAVIGATION SYSTEM v1.0</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content map-wb-content">
+      <div class="map-intro">
+        <div class="map-intro-title">AMIGA NEXUS — SECTOR CHART</div>
+        <div class="map-intro-hint">HOVER STATION FOR INFO &nbsp;/&nbsp; CLICK TO DOCK &nbsp;/&nbsp; WARP GATES REQUIRE JUMP SEQUENCE</div>
+      </div>
+
+      <!-- The Map -->
+      <div style="position:relative;">
+        <svg id="galactic-map" viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Nebula gradients -->
+            <radialGradient id="neb-blue" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0055AA" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#0055AA" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="neb-teal" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5ECBAA" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#5ECBAA" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="neb-orange" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="neb-purple" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#8855CC" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#8855CC" stop-opacity="0"/>
+            </radialGradient>
+            <!-- Station glow filter -->
+            <filter id="glow-teal">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="glow-orange">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+
+          <!-- Space background -->
+          <rect width="1000" height="560" fill="#060B18"/>
+
+          <!-- Grid lines -->
+          <g stroke="rgba(94,203,170,0.04)" stroke-width="1">
+            <line x1="0" y1="112" x2="1000" y2="112"/>
+            <line x1="0" y1="224" x2="1000" y2="224"/>
+            <line x1="0" y1="336" x2="1000" y2="336"/>
+            <line x1="0" y1="448" x2="1000" y2="448"/>
+            <line x1="125" y1="0" x2="125" y2="560"/>
+            <line x1="250" y1="0" x2="250" y2="560"/>
+            <line x1="375" y1="0" x2="375" y2="560"/>
+            <line x1="500" y1="0" x2="500" y2="560"/>
+            <line x1="625" y1="0" x2="625" y2="560"/>
+            <line x1="750" y1="0" x2="750" y2="560"/>
+            <line x1="875" y1="0" x2="875" y2="560"/>
+          </g>
+
+          <!-- Nebula regions -->
+          <ellipse cx="300" cy="130" rx="220" ry="140" fill="url(#neb-blue)"/>
+          <ellipse cx="490" cy="290" rx="200" ry="150" fill="url(#neb-teal)"/>
+          <ellipse cx="820" cy="380" rx="180" ry="130" fill="url(#neb-orange)"/>
+          <ellipse cx="150" cy="380" rx="160" ry="120" fill="url(#neb-purple)"/>
+
+          <!-- Sector labels -->
+          <text x="320" y="28" font-family="Orbitron,sans-serif" font-size="13" font-weight="700" fill="rgba(104,180,212,0.18)" letter-spacing="5">JAY MINER REACH</text>
+          <text x="380" y="195" font-family="Orbitron,sans-serif" font-size="14" font-weight="700" fill="rgba(94,203,170,0.14)" letter-spacing="6">BOING SECTOR</text>
+          <text x="30" y="225" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" fill="rgba(136,85,204,0.22)" letter-spacing="4" transform="rotate(-8 30 225)">LORRAINE CLUSTER</text>
+          <text x="730" y="215" font-family="Orbitron,sans-serif" font-size="12" font-weight="700" fill="rgba(255,107,53,0.2)" letter-spacing="4">AGA NEBULA</text>
+          <text x="820" y="540" font-family="Orbitron,sans-serif" font-size="10" font-weight="700" fill="rgba(255,94,91,0.2)" letter-spacing="3">DEEP ORBIT ZONE</text>
+
+          <!-- Hyperspace lanes -->
+          <g stroke-width="1" fill="none" stroke-dasharray="4 8">
+            <!-- Signal → FPGA -->
+            <line x1="120" y1="100" x2="380" y2="80" stroke="rgba(104,180,212,0.25)" class="lane"/>
+            <!-- FPGA → Hardware -->
+            <line x1="420" y1="80" x2="745" y2="96" stroke="rgba(94,203,170,0.2)" class="lane"/>
+            <!-- Hardware → Community -->
+            <line x1="768" y1="110" x2="810" y2="256" stroke="rgba(104,180,212,0.2)" class="lane"/>
+            <!-- Community → Lounge -->
+            <line x1="793" y1="274" x2="524" y2="282" stroke="rgba(94,203,170,0.2)" class="lane"/>
+            <!-- FPGA → Lounge -->
+            <line x1="403" y1="93" x2="472" y2="268" stroke="rgba(94,203,170,0.18)" class="lane"/>
+            <!-- Lounge → Archives -->
+            <line x1="462" y1="300" x2="184" y2="328" stroke="rgba(255,209,102,0.2)" class="lane"/>
+            <!-- Lounge → Emulation -->
+            <line x1="468" y1="310" x2="284" y2="446" stroke="rgba(94,203,170,0.18)" class="lane"/>
+            <!-- Lounge → Workbench -->
+            <line x1="510" y1="312" x2="518" y2="453" stroke="rgba(104,180,212,0.18)" class="lane"/>
+            <!-- Lounge → Mission -->
+            <line x1="520" y1="300" x2="712" y2="422" stroke="rgba(255,136,0,0.2)" class="lane"/>
+            <!-- Archives → Emulation -->
+            <line x1="175" y1="345" x2="255" y2="448" stroke="rgba(255,209,102,0.2)" class="lane"/>
+            <!-- Signal → Archives -->
+            <line x1="110" y1="112" x2="155" y2="318" stroke="rgba(136,85,204,0.2)" class="lane"/>
+            <!-- Mission → Warp Terminal -->
+            <line x1="746" y1="441" x2="876" y2="492" stroke="rgba(255,94,91,0.25)" class="lane-fast"/>
+            <!-- Workbench → Warp -->
+            <line x1="545" y1="468" x2="873" y2="495" stroke="rgba(255,94,91,0.18)" class="lane"/>
+          </g>
+
+          <!-- ── STATIONS ── -->
+
+          <!-- 01: Signal Tower (110, 100) -->
+          <g class="station-group" data-key="signals" data-href="/signals/" data-num="01" data-name="SIGNAL TOWER" data-desc="Latest transmissions from the Amiga fleet. Hardware releases, OS updates, demo party results." data-status="ONLINE" data-color="#FF8800">
+            <circle class="station-pulse" cx="110" cy="100" r="20" fill="rgba(255,136,0,0.08)" stroke="rgba(255,136,0,0.2)" stroke-width="1"/>
+            <!-- Tower shape -->
+            <rect x="105" y="103" width="10" height="18" rx="1" fill="#1a1a2e" stroke="#FF8800" stroke-width="1"/>
+            <line x1="110" y1="103" x2="110" y2="82" stroke="#FF8800" stroke-width="1.5"/>
+            <line x1="102" y1="90" x2="118" y2="90" stroke="#FF8800" stroke-width="1.2"/>
+            <line x1="104" y1="96" x2="116" y2="96" stroke="#FF8800" stroke-width="1"/>
+            <!-- Signal arcs -->
+            <path d="M96,80 Q110,68 124,80" fill="none" stroke="#FF8800" stroke-width="1.2" opacity="0.7"/>
+            <path d="M90,74 Q110,59 130,74" fill="none" stroke="#FF8800" stroke-width="0.8" opacity="0.35"/>
+            <circle cx="110" cy="100" r="3" fill="#FF8800" filter="url(#glow-orange)"/>
+            <!-- Label -->
+            <text x="110" y="132" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(255,136,0,0.9)" text-anchor="middle" letter-spacing="1">SIGNAL TOWER</text>
+            <text x="110" y="141" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">01</text>
+          </g>
+
+          <!-- 02: FPGA Foundry (400, 80) -->
+          <g class="station-group" data-key="fpga" data-href="/fpga/" data-num="02" data-name="FPGA FOUNDRY" data-desc="Crystal reactor arrays. MiSTer FPGA guides, Vampire V4 cards, hardware-accurate Amiga computation." data-status="ONLINE" data-color="#5ECBAA">
+            <circle class="station-pulse" cx="400" cy="80" r="22" fill="rgba(94,203,170,0.06)" stroke="rgba(94,203,170,0.18)" stroke-width="1"/>
+            <!-- Crystal hexagon -->
+            <polygon points="400,60 416,69 416,87 400,96 384,87 384,69" fill="rgba(94,203,170,0.08)" stroke="#5ECBAA" stroke-width="1.3"/>
+            <!-- Inner lines -->
+            <line x1="400" y1="60" x2="400" y2="96" stroke="rgba(94,203,170,0.3)" stroke-width="0.8"/>
+            <line x1="384" y1="69" x2="416" y2="87" stroke="rgba(94,203,170,0.3)" stroke-width="0.8"/>
+            <line x1="416" y1="69" x2="384" y2="87" stroke="rgba(94,203,170,0.3)" stroke-width="0.8"/>
+            <circle cx="400" cy="78" r="4" fill="#5ECBAA" filter="url(#glow-teal)"/>
+            <!-- Orbit ring -->
+            <ellipse cx="400" cy="78" rx="26" ry="9" fill="none" stroke="rgba(94,203,170,0.25)" stroke-width="0.8" transform="rotate(-15 400 78)"/>
+            <text x="400" y="112" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(94,203,170,0.9)" text-anchor="middle" letter-spacing="1">FPGA FOUNDRY</text>
+            <text x="400" y="121" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">02</text>
+          </g>
+
+          <!-- 03: Procurement Station (760, 100) -->
+          <g class="station-group" data-key="hardware" data-href="/hardware/" data-num="03" data-name="PROCUREMENT STATION" data-desc="Supply dock and trade port. New production hardware, used marketplaces, buyer's guides." data-status="ONLINE" data-color="#68B4D4">
+            <circle class="station-pulse" cx="760" cy="100" r="22" fill="rgba(104,180,212,0.06)" stroke="rgba(104,180,212,0.2)" stroke-width="1"/>
+            <!-- Dock shape -->
+            <rect x="742" y="86" width="36" height="22" rx="2" fill="rgba(104,180,212,0.08)" stroke="#68B4D4" stroke-width="1.2"/>
+            <rect x="737" y="93" width="8" height="10" rx="1" fill="none" stroke="#68B4D4" stroke-width="0.8"/>
+            <rect x="778" y="93" width="8" height="10" rx="1" fill="none" stroke="#68B4D4" stroke-width="0.8"/>
+            <!-- Docking bay lines -->
+            <line x1="750" y1="86" x2="750" y2="108" stroke="rgba(104,180,212,0.4)" stroke-width="0.7"/>
+            <line x1="760" y1="86" x2="760" y2="108" stroke="rgba(104,180,212,0.4)" stroke-width="0.7"/>
+            <line x1="770" y1="86" x2="770" y2="108" stroke="rgba(104,180,212,0.4)" stroke-width="0.7"/>
+            <circle cx="760" cy="97" r="3" fill="#68B4D4"/>
+            <text x="760" y="124" font-family="Share Tech Mono,monospace" font-size="7.5" fill="rgba(104,180,212,0.9)" text-anchor="middle" letter-spacing="0.8">PROCUREMENT STN</text>
+            <text x="760" y="133" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">03</text>
+          </g>
+
+          <!-- 04: Archive Vault (165, 335) -->
+          <g class="station-group" data-key="archives" data-href="/archives/" data-num="04" data-name="ARCHIVE VAULT" data-desc="Deep storage. Amiga history, demo scene, magazine scans, Aminet, custom chip docs." data-status="ONLINE" data-color="#FFD166">
+            <circle class="station-pulse" cx="165" cy="335" r="20" fill="rgba(255,209,102,0.06)" stroke="rgba(255,209,102,0.2)" stroke-width="1"/>
+            <!-- Vault / cylinder top -->
+            <ellipse cx="165" cy="322" rx="16" ry="6" fill="rgba(255,209,102,0.1)" stroke="#FFD166" stroke-width="1.2"/>
+            <rect x="149" y="322" width="32" height="20" fill="rgba(255,209,102,0.06)" stroke="#FFD166" stroke-width="1.2"/>
+            <ellipse cx="165" cy="342" rx="16" ry="6" fill="rgba(255,209,102,0.08)" stroke="#FFD166" stroke-width="1"/>
+            <!-- Vault door lines -->
+            <line x1="165" y1="322" x2="165" y2="342" stroke="rgba(255,209,102,0.3)" stroke-width="0.8"/>
+            <circle cx="165" cy="332" r="4" fill="none" stroke="#FFD166" stroke-width="1"/>
+            <circle cx="165" cy="332" r="1.5" fill="#FFD166"/>
+            <text x="165" y="357" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(255,209,102,0.9)" text-anchor="middle" letter-spacing="1">ARCHIVE VAULT</text>
+            <text x="165" y="366" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">04</text>
+          </g>
+
+          <!-- 05: Nexus Lounge (490, 288) — center station -->
+          <g class="station-group" data-key="lounge" data-href="/lounge/" data-num="05" data-name="NEXUS LOUNGE" data-desc="Crew observation deck. Social hub, presence, NPC crew — the heart of the station." data-status="ONLINE" data-color="#5ECBAA">
+            <circle class="station-pulse" cx="490" cy="288" r="28" fill="rgba(94,203,170,0.05)" stroke="rgba(94,203,170,0.15)" stroke-width="1"/>
+            <!-- Space station rings -->
+            <circle cx="490" cy="288" r="20" fill="rgba(94,203,170,0.07)" stroke="#5ECBAA" stroke-width="1.5"/>
+            <circle cx="490" cy="288" r="12" fill="rgba(94,203,170,0.1)" stroke="rgba(94,203,170,0.5)" stroke-width="1"/>
+            <line x1="470" y1="288" x2="510" y2="288" stroke="rgba(94,203,170,0.4)" stroke-width="0.8"/>
+            <line x1="490" y1="268" x2="490" y2="308" stroke="rgba(94,203,170,0.4)" stroke-width="0.8"/>
+            <!-- Rotating outer ring indicator -->
+            <circle cx="490" cy="268" r="2.5" fill="#5ECBAA" opacity="0.8"/>
+            <circle cx="510" cy="288" r="2.5" fill="#5ECBAA" opacity="0.8"/>
+            <circle cx="490" cy="288" r="4" fill="#5ECBAA" filter="url(#glow-teal)"/>
+            <text x="490" y="322" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(94,203,170,0.9)" text-anchor="middle" letter-spacing="1">NEXUS LOUNGE</text>
+            <text x="490" y="331" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">05</text>
+          </g>
+
+          <!-- 06: Community Transmissions (820, 268) -->
+          <g class="station-group" data-key="community" data-href="/community/" data-num="06" data-name="COMMUNITY TRANSMISSIONS" data-desc="Fleet communications array. Amiga Bill, EAB, YouTube channels, Discord, events." data-status="ONLINE" data-color="#68B4D4">
+            <circle class="station-pulse" cx="820" cy="268" r="22" fill="rgba(104,180,212,0.06)" stroke="rgba(104,180,212,0.18)" stroke-width="1"/>
+            <!-- Dish shape -->
+            <path d="M800,275 Q820,248 840,275" fill="rgba(104,180,212,0.1)" stroke="#68B4D4" stroke-width="1.3"/>
+            <line x1="820" y1="262" x2="820" y2="285" stroke="#68B4D4" stroke-width="1.5"/>
+            <rect x="816" y="283" width="8" height="8" rx="1" fill="rgba(104,180,212,0.15)" stroke="#68B4D4" stroke-width="1"/>
+            <!-- Signal lines -->
+            <path d="M808,262 Q820,250 832,262" fill="none" stroke="rgba(104,180,212,0.4)" stroke-width="0.8"/>
+            <path d="M803,256 Q820,241 837,256" fill="none" stroke="rgba(104,180,212,0.25)" stroke-width="0.7"/>
+            <circle cx="820" cy="260" r="3" fill="#68B4D4"/>
+            <text x="820" y="306" font-family="Share Tech Mono,monospace" font-size="7.5" fill="rgba(104,180,212,0.9)" text-anchor="middle" letter-spacing="0.8">COMMUNITY TX</text>
+            <text x="820" y="315" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">06</text>
+          </g>
+
+          <!-- 07: Emulation Lab (268, 455) -->
+          <g class="station-group" data-key="emulation" data-href="/emulation/" data-num="07" data-name="EMULATION LAB" data-desc="Simulation research pod. WinUAE, FS-UAE, vAmiga, AmiBerry, Amiga Forever — run Amiga anywhere." data-status="ONLINE" data-color="#5ECBAA">
+            <circle class="station-pulse" cx="268" cy="455" r="20" fill="rgba(94,203,170,0.06)" stroke="rgba(94,203,170,0.18)" stroke-width="1"/>
+            <!-- Hex pod -->
+            <polygon points="268,437 282,445 282,461 268,469 254,461 254,445" fill="rgba(94,203,170,0.08)" stroke="#5ECBAA" stroke-width="1.2"/>
+            <!-- Grid inside hex -->
+            <line x1="254" y1="453" x2="282" y2="453" stroke="rgba(94,203,170,0.3)" stroke-width="0.7"/>
+            <line x1="268" y1="437" x2="268" y2="469" stroke="rgba(94,203,170,0.3)" stroke-width="0.7"/>
+            <circle cx="268" cy="453" r="4" fill="none" stroke="#5ECBAA" stroke-width="1"/>
+            <circle cx="268" cy="453" r="2" fill="#5ECBAA"/>
+            <text x="268" y="484" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(94,203,170,0.9)" text-anchor="middle" letter-spacing="1">EMULATION LAB</text>
+            <text x="268" y="493" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">07</text>
+          </g>
+
+          <!-- 08: Workbench Workshop (522, 462) -->
+          <g class="station-group" data-key="workbench" data-href="/workbench/" data-num="08" data-name="WORKBENCH WORKSHOP" data-desc="Engineering and maintenance bay. AmigaOS 3.2/4.x, MUI, networking, accelerators, dev tools." data-status="ONLINE" data-color="#68B4D4">
+            <circle class="station-pulse" cx="522" cy="462" r="20" fill="rgba(104,180,212,0.06)" stroke="rgba(104,180,212,0.18)" stroke-width="1"/>
+            <!-- Workshop shape - rectangle with cuts -->
+            <polygon points="507,447 537,447 541,451 541,477 537,481 507,481 503,477 503,451" fill="rgba(104,180,212,0.08)" stroke="#68B4D4" stroke-width="1.2"/>
+            <!-- Crosshair inside -->
+            <line x1="503" y1="464" x2="541" y2="464" stroke="rgba(104,180,212,0.3)" stroke-width="0.8"/>
+            <line x1="522" y1="447" x2="522" y2="481" stroke="rgba(104,180,212,0.3)" stroke-width="0.8"/>
+            <rect x="518" y="460" width="8" height="8" rx="1" fill="rgba(104,180,212,0.2)" stroke="#68B4D4" stroke-width="0.8"/>
+            <circle cx="522" cy="464" r="2" fill="#68B4D4"/>
+            <text x="522" y="496" font-family="Share Tech Mono,monospace" font-size="7.5" fill="rgba(104,180,212,0.9)" text-anchor="middle" letter-spacing="0.8">WORKBENCH WS</text>
+            <text x="522" y="505" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">08</text>
+          </g>
+
+          <!-- 09: Mission Control (726, 432) -->
+          <g class="station-group" data-key="mission-control" data-href="/mission-control/" data-num="09" data-name="MISSION CONTROL" data-desc="Command bridge. NexusID, Spacepack, Log Book, Clearance Level — your identity within the Nexus." data-status="CLEARANCE REQ" data-color="#FF8800">
+            <circle class="station-pulse" cx="726" cy="432" r="22" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.2)" stroke-width="1"/>
+            <!-- Bridge trapezoid -->
+            <polygon points="710,420 742,420 750,442 718,442" fill="rgba(255,136,0,0.08)" stroke="#FF8800" stroke-width="1.3"/>
+            <!-- Bridge windows -->
+            <rect x="716" y="424" width="7" height="5" rx="1" fill="rgba(255,136,0,0.2)" stroke="#FF8800" stroke-width="0.7"/>
+            <rect x="727" y="424" width="7" height="5" rx="1" fill="rgba(255,136,0,0.2)" stroke="#FF8800" stroke-width="0.7"/>
+            <line x1="710" y1="431" x2="750" y2="431" stroke="rgba(255,136,0,0.3)" stroke-width="0.7"/>
+            <circle cx="730" cy="432" r="3" fill="#FF8800" filter="url(#glow-orange)"/>
+            <text x="726" y="458" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(255,136,0,0.9)" text-anchor="middle" letter-spacing="0.8">MISSION CONTROL</text>
+            <text x="726" y="467" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">09</text>
+          </g>
+
+          <!-- 10: Warp Terminal (896, 500) — PORTAL / distinct -->
+          <g class="station-group" data-key="warp-terminal" data-href="/warp-terminal/" data-num="10" data-name="WARP TERMINAL" data-desc="Jump gate to the known Amiga galaxy. Curated external destinations — all requiring Warp initiation." data-status="PORTAL ACTIVE" data-color="#FF5E5B">
+            <circle class="station-pulse" cx="896" cy="500" r="24" fill="rgba(255,94,91,0.06)" stroke="rgba(255,94,91,0.2)" stroke-width="1"/>
+            <!-- Portal ring -->
+            <circle cx="896" cy="500" r="18" fill="none" stroke="#FF5E5B" stroke-width="2"/>
+            <circle cx="896" cy="500" r="12" fill="none" stroke="rgba(255,94,91,0.5)" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <circle cx="896" cy="500" r="6" fill="rgba(255,94,91,0.15)" stroke="#FF5E5B" stroke-width="1"/>
+            <!-- Portal glow center -->
+            <circle cx="896" cy="500" r="3" fill="#FF5E5B" filter="url(#glow-orange)"/>
+            <!-- Portal spokes -->
+            <line x1="878" y1="500" x2="884" y2="500" stroke="#FF5E5B" stroke-width="1.5"/>
+            <line x1="908" y1="500" x2="914" y2="500" stroke="#FF5E5B" stroke-width="1.5"/>
+            <line x1="896" y1="482" x2="896" y2="488" stroke="#FF5E5B" stroke-width="1.5"/>
+            <line x1="896" y1="512" x2="896" y2="518" stroke="#FF5E5B" stroke-width="1.5"/>
+            <text x="896" y="530" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(255,94,91,0.9)" text-anchor="middle" letter-spacing="1">WARP TERMINAL</text>
+            <text x="896" y="539" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">10</text>
+          </g>
+
+          <!-- Coordinate border -->
+          <rect x="0" y="0" width="1000" height="560" fill="none" stroke="rgba(94,203,170,0.12)" stroke-width="2"/>
+          <!-- Corner tick marks -->
+          <line x1="0" y1="20" x2="20" y2="20" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="20" y1="0" x2="20" y2="20" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="980" y1="20" x2="1000" y2="20" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="980" y1="0" x2="980" y2="20" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="0" y1="540" x2="20" y2="540" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="20" y1="540" x2="20" y2="560" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="980" y1="540" x2="1000" y2="540" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <line x1="980" y1="540" x2="980" y2="560" stroke="rgba(94,203,170,0.3)" stroke-width="1"/>
+          <!-- Scale -->
+          <text x="14" y="554" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(94,203,170,0.3)">AN-CHART-01</text>
+          <text x="900" y="554" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(94,203,170,0.3)">SCALE: 1:50000 AU</text>
+        </svg>
+
+        <!-- Info panel (shown on hover) -->
+        <div class="map-info-panel" id="map-info-panel">
+          <div class="map-info-titlebar">
+            <div class="map-info-gadget"></div>
+            <div class="map-info-wintitle" id="info-wintitle">STATION INFO</div>
+            <div class="map-info-gadget"></div>
+          </div>
+          <div class="map-info-body">
+            <div class="map-info-num" id="info-num">STATION —</div>
+            <div class="map-info-name" id="info-name">—</div>
+            <div class="map-info-desc" id="info-desc">—</div>
+            <div class="map-info-status">
+              <span class="live-dot live-dot-green" id="info-dot"></span>
+              <span id="info-status" style="font-size:10px;color:#aaa;letter-spacing:1px;">—</span>
+            </div>
+            <a class="map-info-dock-btn" id="info-dock-btn" href="#">DOCK AT STATION</a>
+          </div>
+        </div>
+      </div>
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/Galactic-Map/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>10 STATIONS CHARTED — 0 WARPS PLOTTED</span>
+    </div>
+  </div>
+</div>
+
+<!-- Universe return -->
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear">
+    <span class="univ-return-ear-text">C= HUB</span>
+  </div>
+</a>
+
+<script src="./js/warp.js"></script>
+<script src="./js/nav.js"></script>
+<script>
+  // Map station interactions
+  const panel     = document.getElementById('map-info-panel');
+  const infoNum   = document.getElementById('info-num');
+  const infoName  = document.getElementById('info-name');
+  const infoDesc  = document.getElementById('info-desc');
+  const infoStat  = document.getElementById('info-status');
+  const infoBtn   = document.getElementById('info-dock-btn');
+  const infoDot   = document.getElementById('info-dot');
+  const wintitle  = document.getElementById('info-wintitle');
+
+  let hideTimer;
+
+  document.querySelectorAll('.station-group').forEach(g => {
+    g.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimer);
+      const d = g.dataset;
+      infoNum.textContent   = 'STATION ' + d.num;
+      infoName.textContent  = d.name;
+      infoDesc.textContent  = d.desc;
+      infoStat.textContent  = d.status;
+      wintitle.textContent  = 'STATION ' + d.num + ' — INFO';
+      infoBtn.href          = d.href;
+      infoBtn.textContent   = d.status === 'CLEARANCE REQ' ? 'REQUEST CLEARANCE' : 'DOCK AT STATION';
+      // Status dot colour
+      infoDot.style.background = d.status === 'ONLINE' || d.status === 'PORTAL ACTIVE' ? '#5ECBAA' : '#FF8800';
+      infoDot.style.boxShadow  = infoDot.style.background === '#5ECBAA' ? '0 0 6px #5ECBAA' : '0 0 6px #FF8800';
+      panel.classList.add('visible');
+    });
+    g.addEventListener('mouseleave', () => {
+      hideTimer = setTimeout(() => panel.classList.remove('visible'), 300);
+    });
+    g.addEventListener('click', () => {
+      window.location.href = g.dataset.href;
+    });
+  });
+
+  panel.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+  panel.addEventListener('mouseleave', () => {
+    hideTimer = setTimeout(() => panel.classList.remove('visible'), 300);
+  });
+
+  // Highlight current section's station if navigated here from a section
+  const ref = document.referrer;
+  if (ref) {
+    try {
+      const refPath = new URL(ref).pathname;
+      const match   = refPath.match(/^\/([^\/]+)\/?/);
+      if (match) {
+        const el = document.querySelector(`.station-group[data-key="${match[1]}"]`);
+        if (el) {
+          const pulse = el.querySelector('.station-pulse');
+          if (pulse) pulse.style.opacity = '0.8';
+        }
+      }
+    } catch(e) {}
+  }
+</script>
+</body>
+</html>

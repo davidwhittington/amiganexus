@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Lounge — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<style>
+  .lounge-viewport {
+    background: rgba(0,5,20,0.6);
+    border: 1px solid rgba(94,203,170,0.2);
+    border-radius: 120px 120px 20px 20px;
+    padding: 28px 36px 24px;
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lounge-viewport::before {
+    content: '';
+    position: absolute;
+    top: 8%; left: 6%;
+    width: 30%; height: 45%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .presence-display {
+    background: rgba(0,3,12,0.8);
+    border: 1px solid rgba(94,203,170,0.25);
+    border-left: 3px solid var(--atom-seafoam);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    line-height: 2;
+  }
+  .npc-card {
+    background: rgba(0,55,120,0.15);
+    border: 1px solid rgba(104,180,212,0.2);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .npc-avatar {
+    width: 38px; height: 38px;
+    background: rgba(0,85,170,0.3);
+    border: 1px solid rgba(94,203,170,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--atom-seafoam);
+    flex-shrink: 0;
+  }
+  .npc-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--atom-sky);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .npc-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-orange);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .npc-quote {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 12px;
+    color: var(--wb-grey);
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .mode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(94,203,170,0.3);
+    padding: 6px 14px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--wb-grey);
+    cursor: default;
+  }
+  .mode-badge.current {
+    border-color: var(--atom-seafoam);
+    color: var(--atom-seafoam);
+    background: rgba(94,203,170,0.06);
+  }
+  .chat-placeholder {
+    background: rgba(0,3,12,0.8);
+    border: 1px solid rgba(255,136,0,0.2);
+    border-left: 3px solid var(--wb-orange);
+    padding: 20px 24px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .coming-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--wb-orange);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .coming-desc {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 13px;
+    color: var(--wb-grey);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--teal"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">NEXUS LOUNGE — AmigaNexus — STATION 05 — OBSERVATION DECK</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 05 &nbsp;/&nbsp; CREW OBSERVATION DECK</div>
+        <div class="section-title">NEXUS LOUNGE</div>
+        <div class="section-desc">The social centre of the station. Crew presence, transmissions, and the hum of the community.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Viewport -->
+      <div class="lounge-viewport">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--wb-grey);letter-spacing:3px;margin-bottom:12px;">OBSERVATION VIEWPORT — DEEP SPACE SECTOR 7</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;color:var(--atom-seafoam);letter-spacing:4px;text-shadow:0 0 20px rgba(94,203,170,0.4);margin-bottom:6px;">BOING SECTOR</div>
+        <div style="font-family:'Aldrich',sans-serif;font-size:13px;color:var(--wb-grey);line-height:1.6;">Welcome to the Nexus Lounge. The Amiga community gathers here.<br>Make yourself comfortable. The station clock is running.</div>
+      </div>
+
+      <!-- Presence (static Phase 1) -->
+      <div class="subhead">STATION PRESENCE</div>
+      <div class="presence-display">
+        <span style="color:var(--wb-orange);">NEXUS:1/lounge&gt; </span><span style="color:var(--atom-seafoam);">WHO</span><br>
+        <span style="color:var(--wb-grey);">── CREW ABOARD THE NEXUS ──────────────────────</span><br>
+        <span style="color:var(--atom-sky);">  ZORA-7 &nbsp;&nbsp;&nbsp;&nbsp; [NPC] STATION ENGINEER &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BOING SECTOR</span><br>
+        <span style="color:var(--atom-sky);">  MIRA-12 &nbsp;&nbsp;&nbsp; [NPC] ARCHIVIST &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LORRAINE CLUSTER</span><br>
+        <span style="color:var(--atom-sky);">  FELIX-9 &nbsp;&nbsp;&nbsp;&nbsp; [NPC] SCOUT PILOT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JAY MINER REACH</span><br>
+        <span style="color:var(--wb-grey);">── CREW COUNT: 3 ABOARD (NPC) ─────────────────</span><br>
+        <span style="color:var(--wb-grey);">  LIVE PRESENCE: ONLINE IN PHASE 5</span><br>
+        <span style="color:var(--wb-orange);">NEXUS:1/lounge&gt; </span><span style="display:inline-block;width:8px;height:14px;background:var(--wb-orange);vertical-align:bottom;animation:blink 1s step-end infinite;"></span>
+      </div>
+
+      <!-- NPC Crew -->
+      <div class="subhead">CREW QUARTERS</div>
+
+      <div class="npc-card">
+        <div class="npc-avatar">ZR</div>
+        <div>
+          <div class="npc-name">ZORA-7</div>
+          <div class="npc-role">STATION ENGINEER &nbsp;&bull;&nbsp; BOING SECTOR</div>
+          <div class="npc-quote">"The custom chips were never really replaced — they were transcended. Agnus, Denise, Paula... they still run in MiSTer cores right now. Not simulated. Synthesised. That's the difference."</div>
+        </div>
+      </div>
+
+      <div class="npc-card">
+        <div class="npc-avatar">MR</div>
+        <div>
+          <div class="npc-name">MIRA-12</div>
+          <div class="npc-role">ARCHIVIST &nbsp;&bull;&nbsp; LORRAINE CLUSTER</div>
+          <div class="npc-quote">"I have every issue of Amiga Format on record. Disc by disc, cover to cover. The community produced more high-quality software journalism in five years than most industries manage in a lifetime."</div>
+        </div>
+      </div>
+
+      <div class="npc-card">
+        <div class="npc-avatar">FX</div>
+        <div>
+          <div class="npc-name">FELIX-9</div>
+          <div class="npc-role">SCOUT PILOT &nbsp;&bull;&nbsp; JAY MINER REACH</div>
+          <div class="npc-quote">"I've warped to every station on the chart. The FPGA Foundry gets new cores faster than you'd believe. The Warp Terminal has something new every week. The fleet is busy."</div>
+        </div>
+      </div>
+
+      <!-- Interaction Modes -->
+      <div class="subhead">INTERACTION MODES</div>
+      <p style="font-family:'Aldrich',sans-serif;font-size:13px;color:var(--wb-grey);line-height:1.6;margin-bottom:16px;">
+        The Nexus Lounge supports four interaction modes. Your current mode is set in Mission Control and affects social visibility across all stations. NPC crew are always present for guidance.
+      </p>
+      <div>
+        <div class="mode-badge current"><span class="live-dot live-dot-green"></span> EXPLORERS_ONLY &mdash; DEFAULT</div>
+        <div class="mode-badge">SOLO</div>
+        <div class="mode-badge">NPC_ONLY</div>
+        <div class="mode-badge">FULL</div>
+      </div>
+
+      <!-- Terminal Commands -->
+      <div class="subhead">TERMINAL COMMANDS</div>
+      <div class="terminal-block">
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">WHO</span><span class="comment"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— list crew currently aboard</span><br>
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">SAY &lt;message&gt;</span><span class="comment"> &nbsp;&nbsp;&nbsp;&nbsp;— broadcast to crew (Phase 5)</span><br>
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">WHISPER &lt;id&gt; &lt;msg&gt;</span><span class="comment"> — private message (Phase 5)</span><br>
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">MODE &lt;mode&gt;</span><span class="comment"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— set interaction mode</span><br>
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">LOG</span><span class="comment"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— open your Log Book</span><br>
+        <span class="prompt">LOUNGE&gt; </span><span style="color:#fff;">PACK</span><span class="comment"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— view your Spacepack</span>
+      </div>
+
+      <!-- Live comms placeholder -->
+      <div class="chat-placeholder">
+        <div class="coming-label">LIVE COMMS — PHASE 5</div>
+        <div class="coming-desc">
+          Real-time crew communication launches in Phase 5. Supabase Realtime will power live presence and terminal-style chat. For now, the NPC crew holds the lounge.
+        </div>
+      </div>
+
+      <!-- Pinned transmissions -->
+      <div class="subhead" style="margin-top:28px;">PINNED TRANSMISSIONS</div>
+      <div class="signal-post">
+        <div class="signal-post-meta">
+          <span class="signal-post-date">PINNED</span>
+          <span class="tag tag-seafoam">WELCOME</span>
+        </div>
+        <div class="signal-post-title">Welcome to Amiga Nexus</div>
+        <div class="signal-post-body">The Nexus is operational. Explore the Galactic Map to find all 10 stations. Discover the Signal Beacon somewhere on the station to unlock the ambient MOD soundtrack. The fleet awaits.</div>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/lounge/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>3 NPC CREW ABOARD &mdash; LIVE COMMS: PHASE 5</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

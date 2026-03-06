@@ -3,897 +3,863 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amiga Nexus — The Future Is Retro</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<title>Amiga Nexus — Space Station in Deep Orbit</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F680;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --space: #0D1117;
-    --deep: #060810;
-    --wb-blue: #0055AA;
-    --wb-grey: #AAAAAA;
-    --wb-light: #CCCCCC;
-    --wb-orange: #FF8800;
-    --wb-white: #FFFFFF;
-    --atom-seafoam: #5ECBAA;
-    --atom-coral: #FF5E5B;
-    --atom-sky: #68B4D4;
-    --atom-yellow: #FFD166;
-    --chrome: #D8D8D8;
-    --chrome-dark: #888888;
-    --space-navy: #0A0E1A;
-  }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─── RESET & BASE ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body {
-    width: 100%; min-height: 100%;
-    overflow-x: hidden;
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--wb-white);
-    background: var(--space-navy);
-  }
+:root {
+  --space:        #0D1117;
+  --deep:         #060810;
+  --space-navy:   #0A0E1A;
+  --wb-blue:      #0055AA;
+  --wb-grey:      #AAAAAA;
+  --wb-light:     #CCCCCC;
+  --wb-orange:    #FF8800;
+  --wb-white:     #FFFFFF;
+  --seafoam:      #5ECBAA;
+  --sky:          #68B4D4;
+  --yellow:       #FFD166;
+  --coral:        #FF5E5B;
+}
 
-  /* ── Space bg with stars ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(10,30,70,0.9) 0%, transparent 100%),
-      radial-gradient(ellipse 40% 30% at 20% 20%, rgba(0,85,170,0.2) 0%, transparent 100%),
-      radial-gradient(ellipse 30% 40% at 80% 30%, rgba(94,203,170,0.1) 0%, transparent 100%);
-    background-color: var(--space-navy);
-    z-index: 0;
-  }
+html { scroll-behavior: smooth; }
 
-  /* Stars */
-  .stars {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle var(--t, 3s) ease-in-out infinite;
-    animation-delay: var(--d, 0s);
-    opacity: var(--o, 0.6);
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: var(--o, 0.6); transform: scale(1); }
-    50% { opacity: calc(var(--o, 0.6) * 0.3); transform: scale(0.7); }
-  }
+body {
+  background: var(--deep);
+  color: var(--wb-white);
+  font-family: 'Aldrich', sans-serif;
+  overflow: hidden;
+  height: 100dvh;
+}
 
-  /* ── Planet / moon in bg ── */
-  .planet {
-    position: fixed;
-    top: 8%; right: 8%;
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%,
-      #FF9A5C 0%, #FF6B35 30%, #E85520 60%, #8B2D10 100%);
-    box-shadow:
-      inset -20px -15px 30px rgba(0,0,0,0.5),
-      0 0 40px rgba(255,107,53,0.2),
-      0 0 80px rgba(255,107,53,0.1);
-    z-index: 1;
-    pointer-events: none;
-  }
-  .planet::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: -30%;
-    width: 160%; height: 30%;
-    border: 8px solid rgba(255,150,80,0.3);
-    border-radius: 50%;
-    transform: translateY(-50%) rotate(-20deg);
-  }
+body.revealed {
+  overflow-y: auto;
+  height: auto;
+}
 
-  /* ── Flying car ── */
-  .flying-car {
-    position: fixed;
-    top: 18%;
-    left: -160px;
-    z-index: 5;
-    animation: fly-across 22s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes fly-across {
-    0% { left: -160px; top: 18%; }
-    50% { top: 12%; }
-    100% { left: calc(100% + 160px); top: 18%; }
-  }
+/* ─── SCENE ───────────────────────────────────────────────────────── */
+#scene {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000408;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  /* ── Orbit rings ── */
-  .orbits {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    pointer-events: none;
-  }
-  .orbit-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    border-radius: 50%;
-    border: 1px solid;
-    transform: translate(-50%, -50%);
-  }
-  .orbit-ring-1 {
-    width: 500px; height: 200px;
-    border-color: rgba(94,203,170,0.12);
-    transform: translate(-50%, -50%) rotateX(75deg);
-    animation: orbit-spin 25s linear infinite;
-  }
-  .orbit-ring-2 {
-    width: 700px; height: 280px;
-    border-color: rgba(0,85,170,0.15);
-    transform: translate(-50%, -50%) rotateX(75deg) rotateZ(30deg);
-    animation: orbit-spin 40s linear infinite reverse;
-  }
-  .orbit-ring-3 {
-    width: 900px; height: 360px;
-    border-color: rgba(255,136,0,0.08);
-    transform: translate(-50%, -50%) rotateX(75deg) rotateZ(60deg);
-    animation: orbit-spin 60s linear infinite;
-  }
-  .orbit-dot {
-    position: absolute;
-    top: 0; left: 50%;
-    width: 6px; height: 6px;
-    margin-left: -3px; margin-top: -3px;
-    border-radius: 50%;
-    background: var(--atom-seafoam);
-    box-shadow: 0 0 8px var(--atom-seafoam);
-  }
-  @keyframes orbit-spin {
-    from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
-    to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
-  }
+body.revealed #scene {
+  opacity: 0;
+  transform: translateY(-110vh);
+  pointer-events: none;
+}
 
-  /* ── Amiga Workbench window frame ── */
-  .wb-window {
-    position: relative;
-    z-index: 10;
-    max-width: 760px;
-    width: calc(100% - 40px);
-    margin: 60px auto;
-    border: 2px solid var(--wb-grey);
-    box-shadow:
-      0 0 0 1px #555,
-      4px 4px 0 #333,
-      6px 6px 0 #222,
-      0 0 60px rgba(0,85,170,0.3),
-      0 0 120px rgba(94,203,170,0.1);
-  }
+/* CSS star field */
+#scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 8% 12%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 22% 58%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 37% 25%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 51% 70%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 66% 38%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 82% 15%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 91% 52%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 4% 78%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 16% 44%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 86%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 6%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 91%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 74% 66%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 86% 31%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 2% 49%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 13% 93%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 47%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 56% 21%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 71% 80%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 95% 73%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 7% 34%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 10%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 63%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 37%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 7%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 79% 50%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 93% 19%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 11% 68%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(2px 2px at 27% 29%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 43% 81%, rgba(255,255,255,0.7) 0%, transparent 100%);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
 
-  /* Title bar */
-  .wb-titlebar {
-    display: flex;
-    align-items: center;
-    background: var(--wb-blue);
-    padding: 4px 6px;
-    gap: 6px;
-    border-bottom: 2px solid #003888;
-  }
-  .wb-gadget {
-    width: 18px; height: 18px;
-    background: var(--wb-grey);
-    border: 1px solid #888;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .wb-gadget::after {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    background: #666;
-  }
-  .wb-title {
-    flex: 1;
-    text-align: center;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
-    color: var(--wb-white);
-    letter-spacing: 2px;
-  }
-  .wb-gadget-right {
-    width: 18px; height: 18px;
-    background: var(--wb-grey);
-    border: 1px solid #888;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .wb-gadget-right::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 6px; height: 2px;
-    background: #444;
-    transform: translate(-50%, -50%);
-  }
+@keyframes twinkle {
+  0%   { opacity: 0.7; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.8; }
+}
 
-  /* Menu bar */
-  .wb-menubar {
-    display: flex;
-    background: var(--wb-grey);
-    padding: 2px 6px;
-    gap: 2px;
-    border-bottom: 2px solid #666;
-  }
-  .wb-menu-item {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: #111;
-    padding: 1px 10px;
-    cursor: default;
-  }
-  .wb-menu-item:hover {
-    background: var(--wb-blue);
-    color: white;
-  }
+/* Nebula glow */
+.scene-nebula {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(0,85,170,0.18) 0%,
+    rgba(94,203,170,0.08) 40%,
+    transparent 70%
+  );
+  animation: nebula-pulse 6s ease-in-out infinite alternate;
+}
 
-  /* Content area */
-  .wb-content {
-    background: linear-gradient(160deg, #0A1428 0%, #050D1E 60%, #080818 100%);
-    padding: 48px 40px 40px;
-    text-align: center;
-  }
+@keyframes nebula-pulse {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  100% { transform: scale(1.12); opacity: 1;   }
+}
 
-  /* ── Atomic starburst ── */
-  .starburst {
-    display: inline-block;
-    position: relative;
-    margin-bottom: 28px;
-  }
-  .starburst-ring {
-    width: 90px; height: 90px;
-    border-radius: 50%;
-    border: 2px solid var(--atom-seafoam);
-    box-shadow: 0 0 20px rgba(94,203,170,0.3), inset 0 0 20px rgba(94,203,170,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    animation: ring-pulse 3s ease-in-out infinite;
-    margin: 0 auto;
-  }
-  .starburst-ring::before {
-    content: '';
-    position: absolute;
-    inset: -16px;
-    background: conic-gradient(
-      from 0deg,
-      transparent 0deg 22.5deg, rgba(94,203,170,0.15) 22.5deg 25deg,
-      transparent 25deg 67.5deg, rgba(94,203,170,0.15) 67.5deg 70deg,
-      transparent 70deg 112.5deg, rgba(94,203,170,0.15) 112.5deg 115deg,
-      transparent 115deg 157.5deg, rgba(94,203,170,0.15) 157.5deg 160deg,
-      transparent 160deg 202.5deg, rgba(94,203,170,0.15) 202.5deg 205deg,
-      transparent 205deg 247.5deg, rgba(94,203,170,0.15) 247.5deg 250deg,
-      transparent 250deg 292.5deg, rgba(94,203,170,0.15) 292.5deg 295deg,
-      transparent 295deg 337.5deg, rgba(94,203,170,0.15) 337.5deg 340deg,
-      transparent 340deg 360deg
-    );
-    border-radius: 50%;
-    animation: starburst-rotate 20s linear infinite;
-  }
-  .amiga-logo-inner {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 900;
-    color: var(--atom-seafoam);
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px var(--atom-seafoam);
-    line-height: 1.1;
-  }
-  @keyframes ring-pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(94,203,170,0.3), inset 0 0 20px rgba(94,203,170,0.1); }
-    50% { box-shadow: 0 0 35px rgba(94,203,170,0.5), inset 0 0 30px rgba(94,203,170,0.2); }
-  }
-  @keyframes starburst-rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
+/* Orbit ring */
+.scene-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(94,203,170,0.18);
+  animation: orbit-spin 32s linear infinite;
+}
 
-  /* ── Main Title ── */
-  .main-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(32px, 7vw, 68px);
-    font-weight: 900;
-    letter-spacing: 4px;
-    line-height: 1.0;
-    margin-bottom: 6px;
-    background: linear-gradient(135deg, var(--chrome) 0%, var(--wb-white) 40%, var(--atom-seafoam) 70%, var(--atom-sky) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(94,203,170,0.3));
-  }
-  .main-subtitle {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(10px, 2vw, 14px);
-    letter-spacing: 8px;
-    color: var(--wb-orange);
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    text-shadow: 0 0 10px rgba(255,136,0,0.5);
-  }
+@keyframes orbit-spin {
+  from { transform: rotate(0deg) rotateX(72deg); }
+  to   { transform: rotate(360deg) rotateX(72deg); }
+}
 
-  /* ── Bubble dome ── */
-  .dome-wrap {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    max-width: 520px;
-    margin: 0 auto 32px;
-  }
-  .dome {
-    background: linear-gradient(160deg,
-      rgba(0,85,170,0.08) 0%,
-      rgba(94,203,170,0.05) 50%,
-      rgba(0,30,80,0.15) 100%);
-    border: 1px solid rgba(94,203,170,0.25);
-    border-radius: 200px 200px 20px 20px;
-    padding: 36px 40px 30px;
-    position: relative;
-    overflow: hidden;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      inset -2px 0 20px rgba(0,85,170,0.1),
-      0 0 40px rgba(94,203,170,0.08);
-  }
-  /* Dome glass reflection */
-  .dome::before {
-    content: '';
-    position: absolute;
-    top: 10%; left: 8%;
-    width: 35%; height: 40%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
+.scene-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+}
 
-  /* ── Terminal text ── */
-  .terminal-line {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
-    color: var(--atom-seafoam);
-    text-align: left;
-    margin-bottom: 4px;
-    opacity: 0.8;
-  }
-  .terminal-line .prompt { color: var(--wb-orange); }
-  .cursor {
-    display: inline-block;
-    width: 9px; height: 15px;
-    background: var(--wb-orange);
-    vertical-align: bottom;
-    animation: blink 1s step-end infinite;
-    box-shadow: 0 0 6px var(--wb-orange);
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+/* ─── STATION SVG ─────────────────────────────────────────────────── */
+.station-svg {
+  width: clamp(130px, 20vw, 190px);
+  height: clamp(130px, 20vw, 190px);
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: fade-up 1s ease 0.15s forwards;
+  filter: drop-shadow(0 0 22px rgba(94,203,170,0.4));
+}
 
-  .dome-message {
-    font-family: 'Aldrich', sans-serif;
-    font-size: clamp(14px, 2.5vw, 18px);
-    color: var(--wb-light);
-    line-height: 1.7;
-    margin: 20px 0;
-    text-align: center;
-  }
-  .dome-message strong {
-    color: var(--atom-seafoam);
-    font-weight: 400;
-  }
+/* ─── SCENE TEXT ──────────────────────────────────────────────────── */
+.scene-designation {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--wb-grey);
+  letter-spacing: 5px;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fade-up 0.8s ease 0.3s forwards;
+}
 
-  /* ── Coming soon badge ── */
-  .cs-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(90deg, var(--wb-blue), rgba(0,85,170,0.6));
-    border: 1px solid var(--atom-sky);
-    border-radius: 3px;
-    padding: 8px 20px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 5px;
-    color: var(--atom-sky);
-    text-shadow: 0 0 8px rgba(104,180,212,0.6);
-    margin-bottom: 20px;
-    box-shadow: 0 0 20px rgba(0,85,170,0.3);
-  }
-  .cs-dot {
-    width: 8px; height: 8px;
-    background: var(--atom-coral);
-    border-radius: 50%;
-    animation: blink 1s ease-in-out infinite;
-    box-shadow: 0 0 8px var(--atom-coral);
-  }
+.scene-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(34px, 7vw, 78px);
+  font-weight: 900;
+  color: var(--wb-white);
+  letter-spacing: 4px;
+  line-height: 1;
+  opacity: 0;
+  animation: fade-up 0.9s ease 0.5s forwards;
+  text-shadow:
+    0 0 40px rgba(94,203,170,0.5),
+    0 0 80px rgba(94,203,170,0.2),
+    0 2px 0 rgba(0,0,0,0.6);
+}
 
-  /* ── Notify form ── */
-  .notify-row {
-    display: flex;
-    gap: 0;
-    max-width: 400px;
-    margin: 0 auto 24px;
-    border: 1px solid rgba(94,203,170,0.4);
-    background: rgba(5,15,40,0.8);
-  }
-  .notify-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 11px 16px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
-    color: var(--atom-seafoam);
-    outline: none;
-  }
-  .notify-input::placeholder { color: rgba(94,203,170,0.35); }
-  .notify-btn {
-    background: var(--wb-orange);
-    border: none;
-    padding: 11px 18px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #111;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .notify-btn:hover {
-    background: #FFB830;
-    box-shadow: 0 0 16px rgba(255,136,0,0.4);
-  }
+.scene-title span { color: var(--seafoam); }
 
-  /* ── Retro tech specs ── */
-  .specs {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-  .spec-item {
-    text-align: center;
-  }
-  .spec-val {
-    display: block;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--atom-seafoam);
-    text-shadow: 0 0 12px rgba(94,203,170,0.5);
-  }
-  .spec-lbl {
-    display: block;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--wb-grey);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-  .spec-divider {
-    width: 1px;
-    background: rgba(94,203,170,0.2);
-    align-self: stretch;
-  }
+.scene-subtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(10px, 1.5vw, 13px);
+  color: var(--wb-grey);
+  letter-spacing: 4px;
+  margin-top: 14px;
+  opacity: 0;
+  animation: fade-up 0.9s ease 0.7s forwards;
+}
 
-  /* ── Status bar ── */
-  .wb-statusbar {
-    background: var(--wb-grey);
-    border-top: 2px solid #555;
-    display: flex;
-    padding: 3px 8px;
-    gap: 16px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: #111;
-    justify-content: space-between;
-  }
+.scene-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 22px;
+  opacity: 0;
+  animation: fade-up 0.9s ease 0.9s forwards;
+}
 
-  /* ── Atomic decoration bottom ── */
-  .atom-deco {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .atom-dot {
-    width: var(--sz, 6px);
-    height: var(--sz, 6px);
-    border-radius: 50%;
-    background: var(--c, #5ECBAA);
-    box-shadow: 0 0 8px var(--c, #5ECBAA);
-    animation: atom-pulse var(--t,2s) ease-in-out infinite;
-    animation-delay: var(--d,0s);
-  }
-  @keyframes atom-pulse {
-    0%,100% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.4); opacity: 1; }
-  }
+.scene-divider-line {
+  width: 70px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(94,203,170,0.5), transparent);
+}
 
-  /* Starburst corners */
-  .corner-burst {
-    position: fixed;
-    width: 100px; height: 100px;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.25;
-  }
-  .corner-burst.tl { top: 0; left: 0; }
-  .corner-burst.tr { top: 0; right: 0; transform: scaleX(-1); }
-  .corner-burst.bl { bottom: 0; left: 0; transform: scaleY(-1); }
-  .corner-burst.br { bottom: 0; right: 0; transform: scale(-1,-1); }
+.scene-divider-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--seafoam);
+  box-shadow: 0 0 8px var(--seafoam);
+  animation: pip-pulse 2s ease-in-out infinite;
+}
 
-  /* ── Universe return tab — Workbench style (left side slide-out) ── */
-  .univ-return {
-    position: fixed;
-    left: -240px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 50;
-    text-decoration: none;
-    display: flex;
-    align-items: stretch;
-    transition: left 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-    filter: drop-shadow(4px 0 12px rgba(0,0,170,0.5));
-  }
-  .univ-return:hover {
-    left: 0;
-  }
-  /* Workbench window styling for the body */
-  .univ-return-body {
-    width: 240px;
-    background: var(--wb-grey);
-    border: 2px solid;
-    border-color: #DDDDDD #666666 #666666 #DDDDDD;
-    border-left: none;
-    display: flex;
-    flex-direction: column;
-  }
-  .univ-return-titlebar {
-    background: var(--wb-blue);
-    padding: 3px 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-bottom: 2px solid #003888;
-    flex-shrink: 0;
-  }
-  .univ-return-gadget {
-    width: 14px; height: 14px;
-    background: var(--wb-grey);
-    border: 1px solid #888;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .univ-return-gadget::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: #666;
-  }
-  .univ-return-wintitle {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: white;
-    letter-spacing: 1px;
-    flex: 1;
-    text-align: center;
-  }
-  .univ-return-content {
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .univ-return-cta {
-    font-family: 'Aldrich', sans-serif;
-    font-size: 13px;
-    color: #111;
-    line-height: 1.4;
-  }
-  .univ-return-btn {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: #111;
-    background: var(--wb-light);
-    border: 2px solid;
-    border-color: #EEEEEE #555555 #555555 #EEEEEE;
-    padding: 5px 10px;
-    text-align: center;
-    letter-spacing: 1px;
-    display: block;
-  }
-  .univ-return-url {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: #666;
-    letter-spacing: 1px;
-  }
-  /* Workbench blue ear tab — only part visible when collapsed */
-  .univ-return-ear {
-    width: 18px;
-    background: var(--wb-blue);
-    border-radius: 0 4px 4px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border: 2px solid;
-    border-color: #3377CC #002266 #002266 #3377CC;
-    border-left: none;
-  }
-  .univ-return-ear-text {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--wb-white);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1;
-  }
+@keyframes pip-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--seafoam); }
+  50%       { box-shadow: 0 0 18px var(--seafoam), 0 0 32px rgba(94,203,170,0.4); }
+}
 
-  @media (max-width: 600px) {
-    .wb-menubar { display: none; }
-    .wb-content { padding: 32px 20px 28px; }
-    .dome { padding: 24px 20px 20px; }
-    .specs { gap: 16px; }
-    .spec-divider { display: none; }
-    .flying-car { display: none; }
-    .planet { width: 70px; height: 70px; }
-  }
+.scene-status {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--seafoam);
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fade-up 0.9s ease 1.1s forwards;
+}
+
+.scene-hint {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--wb-orange);
+  letter-spacing: 4px;
+  opacity: 0;
+  animation: fade-up 0.9s ease 1.3s forwards, hint-glow 2.5s ease-in-out 2s infinite;
+}
+
+@keyframes hint-glow {
+  0%, 100% { opacity: 0.8; }
+  50%       { opacity: 1;   }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.scene-blink {
+  display: inline-block;
+  width: 8px;
+  height: 12px;
+  background: var(--wb-orange);
+  vertical-align: bottom;
+  margin-left: 6px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── NEXUS (MAIN CONTENT) ────────────────────────────────────────── */
+#nexus {
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 0%, rgba(0,55,120,0.28) 0%, transparent 60%),
+    linear-gradient(180deg, #060810 0%, #0A0E1A 30%, #080B14 100%);
+  padding-bottom: 60px;
+}
+
+#nexus[aria-hidden="true"] { display: none; }
+
+.nexus-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* ─── HEADER ──────────────────────────────────────────────────────── */
+.nexus-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 52px 24px 38px;
+  border-bottom: 1px solid rgba(94,203,170,0.1);
+}
+
+.nexus-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--wb-grey);
+  letter-spacing: 5px;
+  margin-bottom: 18px;
+}
+
+.nexus-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(30px, 5.5vw, 60px);
+  font-weight: 900;
+  color: var(--wb-white);
+  letter-spacing: 3px;
+  line-height: 1;
+  text-shadow: 0 0 28px rgba(94,203,170,0.3);
+}
+
+.nexus-logo span { color: var(--seafoam); }
+
+.nexus-tagline {
+  font-family: 'Aldrich', sans-serif;
+  font-size: clamp(12px, 1.8vw, 15px);
+  color: var(--wb-grey);
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+}
+
+.nexus-header-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  padding: 9px 22px;
+  border: 1px solid;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.header-btn--map {
+  border-color: rgba(94,203,170,0.5);
+  color: var(--seafoam);
+  background: rgba(94,203,170,0.06);
+}
+
+.header-btn--map:hover {
+  background: rgba(94,203,170,0.14);
+  box-shadow: 0 0 16px rgba(94,203,170,0.2);
+}
+
+.header-btn--univ {
+  border-color: rgba(255,136,0,0.45);
+  color: var(--wb-orange);
+  background: rgba(255,136,0,0.06);
+}
+
+.header-btn--univ:hover {
+  background: rgba(255,136,0,0.12);
+  box-shadow: 0 0 16px rgba(255,136,0,0.2);
+}
+
+/* ─── FRAMES GRID ─────────────────────────────────────────────────── */
+.frames-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 14px;
+  padding: 34px 26px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* ─── FRAME ───────────────────────────────────────────────────────── */
+.frame {
+  background: rgba(4,6,14,0.88);
+  border: 1px solid rgba(94,203,170,0.16);
+  border-top: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  animation: panel-in 0.5s ease both;
+}
+
+.frame:hover {
+  border-color: rgba(94,203,170,0.4);
+  box-shadow: 0 0 28px rgba(94,203,170,0.09), 0 4px 20px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.frame:nth-child(1)  { animation-delay: 0.04s; }
+.frame:nth-child(2)  { animation-delay: 0.09s; }
+.frame:nth-child(3)  { animation-delay: 0.14s; }
+.frame:nth-child(4)  { animation-delay: 0.19s; }
+.frame:nth-child(5)  { animation-delay: 0.24s; }
+.frame:nth-child(6)  { animation-delay: 0.29s; }
+.frame:nth-child(7)  { animation-delay: 0.34s; }
+.frame:nth-child(8)  { animation-delay: 0.39s; }
+.frame:nth-child(9)  { animation-delay: 0.44s; }
+.frame:nth-child(10) { animation-delay: 0.49s; }
+
+.frame-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  background: var(--wb-blue);
+  border-top: 3px solid var(--accent, var(--seafoam));
+  position: relative;
+}
+
+.frame-station-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.45);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.frame-icon {
+  font-size: 17px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.frame-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--wb-white);
+  letter-spacing: 2px;
+}
+
+.frame-body {
+  padding: 14px 16px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid var(--accent-border, rgba(94,203,170,0.3));
+}
+
+.frame-desc {
+  font-family: 'Aldrich', sans-serif;
+  font-size: 12px;
+  color: var(--wb-grey);
+  line-height: 1.55;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.frame-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 6px;
+}
+
+.frame-links a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--wb-light);
+  text-decoration: none;
+  padding: 4px 0;
+  display: block;
+  transition: color 0.15s;
+}
+
+.frame-links a::before {
+  content: '> ';
+  color: var(--wb-orange);
+  opacity: 0.55;
+}
+
+.frame-links a:hover { color: var(--seafoam); }
+
+.frame-rule {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 8px 0;
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────────────── */
+.nexus-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 26px 24px 40px;
+  border-top: 1px solid rgba(94,203,170,0.09);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--wb-grey);
+  letter-spacing: 2px;
+  line-height: 2.2;
+}
+
+.nexus-footer a {
+  color: var(--wb-grey);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(170,170,170,0.25);
+  transition: color 0.15s;
+}
+
+.nexus-footer a:hover { color: var(--seafoam); }
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .frames-grid { grid-template-columns: 1fr; padding: 18px 14px; }
+  .nexus-header { padding: 36px 14px 26px; }
+  .scene-orbit { display: none; }
+}
+
 </style>
 </head>
 <body>
 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
+<!-- ══════════════════════════════════════════════════════
+     SCENE — APPROACH SEQUENCE
+══════════════════════════════════════════════════════ -->
+<div id="scene" role="button" tabindex="0" aria-label="Click to dock with Amiga Nexus">
 
-<!-- Planet -->
-<div class="planet"></div>
+  <div class="scene-nebula"></div>
 
-<!-- Orbit rings -->
-<div class="orbits">
-  <div class="orbit-ring orbit-ring-1"><div class="orbit-dot" style="background:var(--atom-seafoam);box-shadow:0 0 8px var(--atom-seafoam)"></div></div>
-  <div class="orbit-ring orbit-ring-2"><div class="orbit-dot" style="background:var(--wb-orange);box-shadow:0 0 8px var(--wb-orange)"></div></div>
-  <div class="orbit-ring orbit-ring-3"><div class="orbit-dot" style="background:var(--atom-coral);box-shadow:0 0 8px var(--atom-coral)"></div></div>
-</div>
+  <div class="scene-orbit" style="width:340px;height:340px;"></div>
+  <div class="scene-orbit" style="width:240px;height:240px;border-color:rgba(0,85,170,0.3);animation-duration:20s;animation-direction:reverse;"></div>
 
-<!-- Flying car -->
-<svg class="flying-car" width="140" height="55" viewBox="0 0 140 55" fill="none">
-  <!-- Body -->
-  <ellipse cx="70" cy="35" rx="55" ry="16" fill="#888" opacity="0.9"/>
-  <!-- Cockpit bubble -->
-  <ellipse cx="60" cy="24" rx="28" ry="16" fill="#6BBBD8" opacity="0.7"/>
-  <ellipse cx="60" cy="24" rx="20" ry="11" fill="#9DD8EC" opacity="0.5"/>
-  <!-- Fins -->
-  <path d="M115 35 L135 25 L130 38 Z" fill="#666"/>
-  <path d="M18 35 L5 25 L10 38 Z" fill="#666"/>
-  <!-- Bottom jets -->
-  <rect x="40" y="48" width="10" height="7" rx="3" fill="#FF8800" opacity="0.8"/>
-  <rect x="70" y="49" width="8" height="6" rx="3" fill="#FF8800" opacity="0.7"/>
-  <rect x="95" y="48" width="10" height="7" rx="3" fill="#FF8800" opacity="0.8"/>
-  <!-- Jet trails -->
-  <ellipse cx="45" cy="57" rx="6" ry="3" fill="#FFD166" opacity="0.4"/>
-  <ellipse cx="74" cy="57" rx="5" ry="2.5" fill="#FFD166" opacity="0.35"/>
-  <ellipse cx="100" cy="57" rx="6" ry="3" fill="#FFD166" opacity="0.4"/>
-  <!-- Window reflections -->
-  <ellipse cx="52" cy="20" rx="5" ry="7" fill="white" opacity="0.15"/>
-</svg>
+  <div class="scene-inner">
 
-<!-- Corner starbursts -->
-<svg class="corner-burst tl" viewBox="0 0 100 100" fill="none">
-  <line x1="0" y1="0" x2="80" y2="80" stroke="#FF8800" stroke-width="1"/>
-  <line x1="20" y1="0" x2="80" y2="60" stroke="#5ECBAA" stroke-width="0.8"/>
-  <line x1="0" y1="20" x2="60" y2="80" stroke="#5ECBAA" stroke-width="0.8"/>
-  <circle cx="0" cy="0" r="4" fill="#FF8800"/>
-</svg>
-<svg class="corner-burst tr" viewBox="0 0 100 100" fill="none">
-  <line x1="0" y1="0" x2="80" y2="80" stroke="#FF8800" stroke-width="1"/>
-  <line x1="20" y1="0" x2="80" y2="60" stroke="#5ECBAA" stroke-width="0.8"/>
-  <line x1="0" y1="20" x2="60" y2="80" stroke="#5ECBAA" stroke-width="0.8"/>
-  <circle cx="0" cy="0" r="4" fill="#FF8800"/>
-</svg>
+    <svg class="station-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="100" cy="100" rx="88" ry="88" stroke="rgba(94,203,170,0.2)" stroke-width="1"/>
+      <ellipse cx="100" cy="100" rx="74" ry="74" stroke="rgba(0,85,170,0.35)" stroke-width="1" stroke-dasharray="6 4"/>
+      <rect x="70" y="70" width="60" height="60" rx="3" fill="rgba(0,55,120,0.75)" stroke="rgba(94,203,170,0.65)" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="17" fill="rgba(0,85,170,0.55)" stroke="rgba(94,203,170,0.85)" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="6" fill="rgba(94,203,170,0.95)"/>
+      <rect x="16" y="97" width="48" height="6" rx="1" fill="rgba(0,85,170,0.75)" stroke="rgba(104,180,212,0.5)" stroke-width="1"/>
+      <rect x="136" y="97" width="48" height="6" rx="1" fill="rgba(0,85,170,0.75)" stroke="rgba(104,180,212,0.5)" stroke-width="1"/>
+      <rect x="97" y="16" width="6" height="48" rx="1" fill="rgba(0,85,170,0.75)" stroke="rgba(104,180,212,0.5)" stroke-width="1"/>
+      <rect x="97" y="136" width="6" height="48" rx="1" fill="rgba(0,85,170,0.75)" stroke="rgba(104,180,212,0.5)" stroke-width="1"/>
+      <rect x="20" y="99" width="12" height="2" rx="0.5" fill="rgba(94,203,170,0.7)"/>
+      <rect x="36" y="99" width="12" height="2" rx="0.5" fill="rgba(94,203,170,0.45)"/>
+      <rect x="168" y="99" width="12" height="2" rx="0.5" fill="rgba(94,203,170,0.7)"/>
+      <rect x="152" y="99" width="12" height="2" rx="0.5" fill="rgba(94,203,170,0.45)"/>
+      <circle cx="73" cy="73" r="2" fill="rgba(94,203,170,0.85)"/>
+      <circle cx="127" cy="73" r="2" fill="rgba(94,203,170,0.85)"/>
+      <circle cx="73" cy="127" r="2" fill="rgba(94,203,170,0.85)"/>
+      <circle cx="127" cy="127" r="2" fill="rgba(94,203,170,0.85)"/>
+      <line x1="100" y1="8" x2="100" y2="0" stroke="rgba(94,203,170,0.6)" stroke-width="1.5"/>
+      <line x1="100" y1="192" x2="100" y2="200" stroke="rgba(94,203,170,0.6)" stroke-width="1.5"/>
+    </svg>
 
-<!-- Main content -->
-<div style="position:relative;z-index:10;padding:20px 20px 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;">
+    <div class="scene-designation">DEEP ORBIT STATION &nbsp;&bull;&nbsp; SECTOR 7 &nbsp;&bull;&nbsp; AMIGA DIVISION</div>
+    <div class="scene-title">AMIGA <span>NEXUS</span></div>
+    <div class="scene-subtitle">YOUR GUIDE TO THE AMIGA GALAXY</div>
 
-  <div class="wb-window">
-    <!-- Title bar -->
-    <div class="wb-titlebar">
-      <div class="wb-gadget"></div>
-      <div class="wb-gadget" style="margin-right:4px;"></div>
-      <div class="wb-title">AmigaNexus.com — Workbench 1.3 — INCOMING TRANSMISSION</div>
-      <div class="wb-gadget-right"></div>
-    </div>
-    <!-- Menu bar -->
-    <div class="wb-menubar">
-      <div class="wb-menu-item">Workbench</div>
-      <div class="wb-menu-item">Nexus</div>
-      <div class="wb-menu-item">Retro</div>
-      <div class="wb-menu-item">Future</div>
-      <div class="wb-menu-item">About</div>
+    <div class="scene-divider">
+      <div class="scene-divider-line"></div>
+      <div class="scene-divider-pip"></div>
+      <div class="scene-divider-line"></div>
     </div>
 
-    <!-- Content -->
-    <div class="wb-content">
+    <div class="scene-status">STATION ONLINE &mdash; ALL SYSTEMS NOMINAL</div>
+    <div class="scene-hint">CLICK TO DOCK<span class="scene-blink"></span></div>
 
-      <div class="starburst">
-        <div class="starburst-ring">
-          <div class="amiga-logo-inner">AMIGA<br>NEXUS</div>
-        </div>
-      </div>
-
-      <div class="cs-badge">
-        <div class="cs-dot"></div>
-        COMING SOON
-        <div class="cs-dot"></div>
-      </div>
-
-      <div class="main-title">AMIGA NEXUS</div>
-      <div class="main-subtitle">Future Retro Computing — Est. 2026</div>
-
-      <div class="dome-wrap">
-        <div class="dome">
-          <div class="terminal-line"><span class="prompt">1.&#9;› </span>LOADING NEXUS MANIFEST...</div>
-          <div class="terminal-line"><span class="prompt">1.&#9;› </span>SYSTEM: AMIGA + JETSON DRIVE ARRAY</div>
-          <div class="terminal-line"><span class="prompt">1.&#9;› </span>STATUS: PREFLIGHT SEQUENCE <span class="cursor"></span></div>
-
-          <div class="dome-message">
-            Where the <strong>Amiga's</strong> creative spirit meets the<br>
-            <strong>Space Age optimism</strong> of the atomic era.<br><br>
-            Retro computing, future aesthetics,<br>
-            and the belief that <strong>tomorrow should look amazing.</strong>
-          </div>
-
-          <div style="text-align:center;">
-            <div class="notify-row">
-              <input class="notify-input" type="email" placeholder="your@email.com">
-              <button class="notify-btn" onclick="handleNotify(this)">HAIL FREQUENCY</button>
-            </div>
-          </div>
-
-          <div class="specs">
-            <div class="spec-item">
-              <span class="spec-val" id="cd-days">--</span>
-              <span class="spec-lbl">Days Out</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span class="spec-val" id="cd-hrs">--</span>
-              <span class="spec-lbl">Hours</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span class="spec-val" id="cd-min">--</span>
-              <span class="spec-lbl">Minutes</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span class="spec-val" id="cd-sec">--</span>
-              <span class="spec-lbl">Seconds</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /wb-content -->
-
-    <!-- Status bar -->
-    <div class="wb-statusbar">
-      <span>AmigaNexus v0.1 — PREFLIGHT MODE</span>
-      <span id="wb-clock">00:00:00</span>
-      <span>DISK: FUTURE.ADF</span>
-    </div>
-  </div><!-- /wb-window -->
-
-</div>
-
-<!-- Bottom atom dots -->
-<div class="atom-deco">
-  <div class="atom-dot" style="--c:#FF5E5B;--sz:5px;--t:2.1s;--d:0s"></div>
-  <div class="atom-dot" style="--c:#5ECBAA;--sz:8px;--t:2.5s;--d:0.3s"></div>
-  <div class="atom-dot" style="--c:#68B4D4;--sz:5px;--t:1.8s;--d:0.6s"></div>
-  <div class="atom-dot" style="--c:#FF8800;--sz:7px;--t:3s;--d:0.2s"></div>
-  <div class="atom-dot" style="--c:#5ECBAA;--sz:5px;--t:2.2s;--d:0.9s"></div>
-  <div class="atom-dot" style="--c:#FFD166;--sz:6px;--t:2.8s;--d:0.4s"></div>
-  <div class="atom-dot" style="--c:#FF5E5B;--sz:4px;--t:1.9s;--d:0.7s"></div>
-</div>
-
-<!-- Universe return tab — Workbench style, left side slide-out -->
-<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
-  <div class="univ-return-body">
-    <div class="univ-return-titlebar">
-      <div class="univ-return-gadget"></div>
-      <div class="univ-return-wintitle">Commodore Universe</div>
-    </div>
-    <div class="univ-return-content">
-      <div class="univ-return-cta">Return to Commodore Universe</div>
-      <div class="univ-return-btn">◄ &nbsp; LAUNCH HUB</div>
-      <div class="univ-return-url">commodoreuniverse.com</div>
-    </div>
   </div>
-  <div class="univ-return-ear">
-    <span class="univ-return-ear-text">C= HUB</span>
-  </div>
-</a>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     NEXUS — MAIN SITE
+══════════════════════════════════════════════════════ -->
+<div id="nexus" aria-hidden="true">
+
+  <div class="nexus-stars" id="nexus-stars"></div>
+
+  <header class="nexus-header">
+    <div class="nexus-eyebrow">DEEP ORBIT STATION &mdash; AMIGA DIVISION &mdash; EST. 1985</div>
+    <div class="nexus-logo">AMIGA <span>NEXUS</span></div>
+    <div class="nexus-tagline">Your Guide to the Amiga Galaxy &mdash; Hardware, Emulation, FPGA &amp; Community</div>
+    <div class="nexus-header-links">
+      <a href="map.html" class="header-btn header-btn--map">&#x2726;&nbsp; GALACTIC MAP</a>
+      <a href="https://commodoreuniverse.com" class="header-btn header-btn--univ" target="_blank" rel="noopener">&#x25C4;&nbsp; COMMODORE UNIVERSE</a>
+    </div>
+  </header>
+
+  <div class="frames-grid">
+
+    <!-- 01 · Signal Tower -->
+    <div class="frame" data-href="signals/" style="--accent:var(--seafoam);--accent-border:rgba(94,203,170,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F4E1;</span>
+        <h2 class="frame-title">Signal Tower</h2>
+        <span class="frame-station-num">ST-01</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">News, hardware releases, OS updates, and community dispatches from across the Amiga galaxy.</p>
+        <ul class="frame-links">
+          <li><a href="signals/">Latest Transmissions</a></li>
+          <li><a href="signals/">Hardware Releases</a></li>
+          <li><a href="signals/">OS &amp; Firmware Updates</a></li>
+          <li><a href="signals/">Community Events</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 02 · FPGA Foundry -->
+    <div class="frame" data-href="fpga/" style="--accent:var(--sky);--accent-border:rgba(104,180,212,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x26A1;</span>
+        <h2 class="frame-title">FPGA Foundry</h2>
+        <span class="frame-station-num">ST-02</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">Hardware-accurate Amiga cores on MiSTer and Vampire &mdash; the future is reconfigurable silicon.</p>
+        <ul class="frame-links">
+          <li><a href="fpga/">MiSTer FPGA Guide</a></li>
+          <li><a href="fpga/#vampire">Vampire V4 &amp; Apollo Core</a></li>
+          <li><a href="fpga/#mister-vs-vampire">MiSTer vs Vampire</a></li>
+          <li><a href="fpga/#setup">Core Setup &amp; Kickstart ROMs</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Procurement Station -->
+    <div class="frame" data-href="hardware/" style="--accent:var(--wb-orange);--accent-border:rgba(255,136,0,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F6F8;</span>
+        <h2 class="frame-title">Procurement Station</h2>
+        <span class="frame-station-num">ST-03</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">New production hardware, used markets, buyer&rsquo;s guides, and sourcing advice for every Amiga model.</p>
+        <ul class="frame-links">
+          <li><a href="hardware/">New Production Hardware</a></li>
+          <li><a href="hardware/#used">Used Amiga Markets</a></li>
+          <li><a href="hardware/#buyers-guide">Buyer&rsquo;s Guide by Model</a></li>
+          <li><a href="hardware/#recapping">Capacitor Recapping</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 04 · Archive Vault -->
+    <div class="frame" data-href="archives/" style="--accent:var(--yellow);--accent-border:rgba(255,209,102,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F5C4;</span>
+        <h2 class="frame-title">Archive Vault</h2>
+        <span class="frame-station-num">ST-04</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">The Amiga cultural record &mdash; demo scene, magazine scans, software archives, and a history timeline from 1985 to now.</p>
+        <ul class="frame-links">
+          <li><a href="archives/">Amiga Demo Scene</a></li>
+          <li><a href="archives/#magazines">Magazine Archive</a></li>
+          <li><a href="archives/#aminet">Aminet &amp; Software</a></li>
+          <li><a href="archives/#timeline">History Timeline 1985&ndash;Now</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 05 · Nexus Lounge -->
+    <div class="frame" data-href="lounge/" style="--accent:var(--seafoam);--accent-border:rgba(94,203,170,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1FA90;</span>
+        <h2 class="frame-title">Nexus Lounge</h2>
+        <span class="frame-station-num">ST-05</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">The social centre of the station. Crew presence, NPC guidance, transmissions, and the hum of the community.</p>
+        <ul class="frame-links">
+          <li><a href="lounge/">Station Presence &amp; WHO</a></li>
+          <li><a href="lounge/#crew">Meet the NPC Crew</a></li>
+          <li><a href="lounge/#modes">Interaction Modes</a></li>
+          <li><a href="lounge/#transmissions">Pinned Transmissions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 06 · Community Transmissions -->
+    <div class="frame" data-href="community/" style="--accent:var(--sky);--accent-border:rgba(104,180,212,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F4FB;</span>
+        <h2 class="frame-title">Community Transmissions</h2>
+        <span class="frame-station-num">ST-06</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">The living Amiga community &mdash; YouTube, forums, events, Discord, and the people keeping the flame burning.</p>
+        <ul class="frame-links">
+          <li><a href="community/">Amiga Bill &mdash; Featured Creator</a></li>
+          <li><a href="community/#forums">English Amiga Board &amp; Forums</a></li>
+          <li><a href="community/#youtube">YouTube Channels</a></li>
+          <li><a href="community/#events">Events &amp; Demo Parties</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 07 · Emulation Lab -->
+    <div class="frame" data-href="emulation/" style="--accent:var(--wb-orange);--accent-border:rgba(255,136,0,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F4BF;</span>
+        <h2 class="frame-title">Emulation Lab</h2>
+        <span class="frame-station-num">ST-07</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">Run Amiga on any platform. WinUAE, FS-UAE, vAmiga, AmiBerry &mdash; complete setup guides and legal ROM sourcing.</p>
+        <ul class="frame-links">
+          <li><a href="emulation/">Emulator Comparison</a></li>
+          <li><a href="emulation/#winuae">WinUAE Setup Guide</a></li>
+          <li><a href="emulation/#amiberry">AmiBerry on Raspberry Pi</a></li>
+          <li><a href="emulation/#whdload">WHDLoad from Hard Drive</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 08 · Workbench Workshop -->
+    <div class="frame" data-href="workbench/" style="--accent:var(--seafoam);--accent-border:rgba(94,203,170,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F527;</span>
+        <h2 class="frame-title">Workbench Workshop</h2>
+        <span class="frame-station-num">ST-08</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">AmigaOS versions, Workbench customisation, development tools, networking, and accelerator card reference.</p>
+        <ul class="frame-links">
+          <li><a href="workbench/">AmigaOS 3.2, OS4 &amp; AROS</a></li>
+          <li><a href="workbench/#customise">Workbench Customisation</a></li>
+          <li><a href="workbench/#dev">Development &amp; AMOS / BLITZ</a></li>
+          <li><a href="workbench/#networking">Networking &amp; TCP/IP</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 09 · Mission Control -->
+    <div class="frame" data-href="mission-control/" style="--accent:var(--yellow);--accent-border:rgba(255,209,102,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F3AF;</span>
+        <h2 class="frame-title">Mission Control</h2>
+        <span class="frame-station-num">ST-09</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">Your identity in the Nexus &mdash; NexusID, Clearance Level, Spacepack, and Log Book. Authentication in Phase 3.</p>
+        <ul class="frame-links">
+          <li><a href="mission-control/">Your NexusID Card</a></li>
+          <li><a href="mission-control/#clearance">Clearance Levels</a></li>
+          <li><a href="mission-control/#spacepack">Your Spacepack</a></li>
+          <li><a href="mission-control/">Request Clearance</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 10 · Warp Terminal -->
+    <div class="frame" data-href="warp-terminal/" style="--accent:var(--coral);--accent-border:rgba(255,94,91,0.32);">
+      <div class="frame-header">
+        <span class="frame-icon">&#x1F300;</span>
+        <h2 class="frame-title">Warp Terminal</h2>
+        <span class="frame-station-num">ST-10</span>
+      </div>
+      <div class="frame-body">
+        <p class="frame-desc">The curated gateway to the wider Amiga galaxy. Every off-site destination requires initiating a Warp. Jump with caution.</p>
+        <ul class="frame-links">
+          <li><a href="warp-terminal/">Hardware &amp; Retailers</a></li>
+          <li><a href="warp-terminal/#community">Community &amp; Forums</a></li>
+          <li><a href="warp-terminal/#archives">Archives &amp; Scene</a></li>
+          <li><a href="warp-terminal/#events">Events &amp; Resources</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /.frames-grid -->
+
+  <footer class="nexus-footer">
+    <div>AMIGA NEXUS &mdash; SPACE STATION IN DEEP ORBIT SINCE 1985</div>
+    <div>
+      &copy; 2026 Amiga Nexus &nbsp;&middot;&nbsp;
+      Part of <a href="https://commodoreuniverse.com" target="_blank" rel="noopener">Commodore Universe</a> &nbsp;&middot;&nbsp;
+      Not affiliated with Amiga Corporation or Hyperion Entertainment
+    </div>
+  </footer>
+
+</div><!-- /#nexus -->
+
 
 <script>
-  // Generate stars
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 200; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() < 0.7 ? 1 : Math.random() < 0.8 ? 2 : 3;
-    s.style.cssText = `
-      left:${Math.random()*100}%;
-      top:${Math.random()*100}%;
-      width:${size}px;
-      height:${size}px;
-      --t:${2+Math.random()*4}s;
-      --d:${Math.random()*5}s;
-      --o:${0.3+Math.random()*0.7};
-    `;
-    starsEl.appendChild(s);
-  }
+(function () {
+  var scene  = document.getElementById('scene');
+  var nexus  = document.getElementById('nexus');
+  var starEl = document.getElementById('nexus-stars');
 
-  // Countdown
-  const launch = new Date('2026-08-01T00:00:00Z');
-  function tick() {
-    const diff = launch - new Date();
-    if (diff <= 0) {
-      ['days','hrs','min','sec'].forEach(id => document.getElementById('cd-'+id).textContent='00');
-      return;
+  /* Inject star-twinkle keyframe */
+  var ks = document.createElement('style');
+  ks.textContent = '@keyframes star-twinkle{from{opacity:.15}to{opacity:.95}}';
+  document.head.appendChild(ks);
+
+  /* Star field for main content */
+  function spawnStars() {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 170; i++) {
+      var s    = document.createElement('div');
+      var size = Math.random() < 0.12 ? 2 : 1;
+      var dly  = (Math.random() * 6).toFixed(2);
+      var dur  = (3 + Math.random() * 4).toFixed(2);
+      var op   = (0.3 + Math.random() * 0.7).toFixed(2);
+      s.style.cssText = [
+        'position:absolute',
+        'left:' + (Math.random() * 100).toFixed(2) + '%',
+        'top:'  + (Math.random() * 100).toFixed(2) + '%',
+        'width:' + size + 'px',
+        'height:' + size + 'px',
+        'border-radius:50%',
+        'background:rgba(255,255,255,' + op + ')',
+        'animation:star-twinkle ' + dur + 's ' + dly + 's ease-in-out infinite alternate',
+      ].join(';');
+      frag.appendChild(s);
     }
-    document.getElementById('cd-days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
-    document.getElementById('cd-hrs').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
-    document.getElementById('cd-min').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
-    document.getElementById('cd-sec').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+    starEl.appendChild(frag);
   }
-  tick(); setInterval(tick, 1000);
 
-  // Workbench clock
-  function wbClock() {
-    const n = new Date();
-    document.getElementById('wb-clock').textContent =
-      [n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+  /* Reveal handler */
+  function reveal() {
+    if (document.body.classList.contains('revealed')) return;
+    document.body.classList.add('revealed');
+    nexus.removeAttribute('aria-hidden');
+    scene.setAttribute('aria-hidden', 'true');
+    spawnStars();
+    setTimeout(function () {
+      scene.style.display = 'none';
+    }, 1000);
   }
-  wbClock(); setInterval(wbClock, 1000);
 
-  function handleNotify(btn) {
-    const input = btn.previousElementSibling;
-    if (input.value && input.value.includes('@')) {
-      btn.textContent = 'LOCKED IN ✓';
-      btn.style.background = '#5ECBAA';
-      input.value = '';
-      input.placeholder = 'frequency locked — transmission queued';
-    }
-  }
+  /* Frame click-through */
+  document.querySelectorAll('.frame[data-href]').forEach(function (frame) {
+    frame.addEventListener('click', function (e) {
+      if (!e.target.closest('a')) {
+        window.location.href = frame.dataset.href;
+      }
+    });
+  });
+
+  scene.addEventListener('click', reveal);
+  scene.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') reveal();
+  });
+}());
 </script>
+
 </body>
 </html>

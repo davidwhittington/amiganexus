@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Control — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<style>
+  .nexus-id-card {
+    background: linear-gradient(135deg, rgba(0,30,80,0.95) 0%, rgba(0,15,40,0.98) 100%);
+    border: 1px solid rgba(94,203,170,0.4);
+    box-shadow: 0 0 30px rgba(94,203,170,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 24px 28px;
+    max-width: 480px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .nexus-id-card::before {
+    content: 'AMIGA NEXUS';
+    position: absolute;
+    bottom: 10px; right: 14px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(94,203,170,0.04);
+    letter-spacing: 2px;
+  }
+  .nexus-id-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(94,203,170,0.15);
+  }
+  .nexus-id-avatar {
+    width: 56px; height: 56px;
+    background: rgba(0,85,170,0.3);
+    border: 2px solid var(--atom-seafoam);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--atom-seafoam);
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(94,203,170,0.2);
+  }
+  .nexus-id-meta { flex: 1; }
+  .nexus-id-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wb-white);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .nexus-id-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-orange);
+    letter-spacing: 3px;
+  }
+  .nexus-id-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 16px;
+  }
+  .nexus-id-field:last-child { border-bottom: none; }
+  .nexus-id-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--wb-grey);
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+  .nexus-id-value {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 13px;
+    color: var(--wb-white);
+    text-align: right;
+  }
+  .clearance-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 16px;
+  }
+  .clearance-pip {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+  }
+  .clearance-pip.filled { background: var(--atom-seafoam); box-shadow: 0 0 4px var(--atom-seafoam); }
+  .clearance-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--atom-seafoam);
+    letter-spacing: 2px;
+    margin-top: 6px;
+  }
+  .locked-overlay {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,136,0,0.3);
+    padding: 20px 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .locked-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--wb-orange);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .locked-desc {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 13px;
+    color: var(--wb-grey);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .clearance-level-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border-left: 2px solid;
+    margin-bottom: 12px;
+    background: rgba(0,5,20,0.5);
+  }
+  .clearance-level-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    min-width: 110px;
+  }
+  .clearance-level-perks {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 12px;
+    color: var(--wb-light);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">MISSION CONTROL — AmigaNexus — STATION 09 — COMMAND BRIDGE</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 09 &nbsp;/&nbsp; COMMAND BRIDGE — RESTRICTED ACCESS</div>
+        <div class="section-title">MISSION CONTROL</div>
+        <div class="section-desc">Your identity within the Nexus. NexusID, Clearance Level, Spacepack, and Log Book. Authentication launches in Phase 3.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Demo ID Card -->
+      <div class="subhead">YOUR NEXUS IDENTITY</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
+
+        <div class="nexus-id-card">
+          <div class="nexus-id-header">
+            <div class="nexus-id-avatar">?</div>
+            <div class="nexus-id-meta">
+              <div class="nexus-id-num">NexusID: ——</div>
+              <div class="nexus-id-type">UNREGISTERED CREW &nbsp;/&nbsp; REQUEST CLEARANCE</div>
+            </div>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">CLEARANCE</span>
+            <span class="nexus-id-value" style="color:var(--wb-grey);">— NONE —</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">ASSIGNED AMIGA</span>
+            <span class="nexus-id-value" style="color:var(--wb-grey);">— UNASSIGNED —</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">SPACEPACK</span>
+            <span class="nexus-id-value" style="color:var(--wb-grey);">0 items</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">LOG BOOK</span>
+            <span class="nexus-id-value" style="color:var(--wb-grey);">0 entries</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">INSIGNIA</span>
+            <span class="nexus-id-value" style="color:var(--wb-grey);">None earned</span>
+          </div>
+          <div class="clearance-bar">
+            <div class="clearance-pip"></div>
+            <div class="clearance-pip"></div>
+            <div class="clearance-pip"></div>
+            <div class="clearance-pip"></div>
+          </div>
+          <div class="clearance-label">CLEARANCE: NONE &mdash; REQUEST ACCESS TO BEGIN</div>
+        </div>
+
+        <!-- Example: logged in state preview -->
+        <div class="nexus-id-card" style="opacity:0.6;border-color:rgba(94,203,170,0.2);">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--wb-orange);letter-spacing:2px;margin-bottom:10px;text-align:center;">EXAMPLE — LOGGED IN STATE</div>
+          <div class="nexus-id-header">
+            <div class="nexus-id-avatar">JM</div>
+            <div class="nexus-id-meta">
+              <div class="nexus-id-num">NexusID: C8472</div>
+              <div class="nexus-id-type">EXPLORER &nbsp;/&nbsp; BOING SECTOR</div>
+            </div>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">CLEARANCE</span>
+            <span class="nexus-id-value" style="color:var(--atom-seafoam);">EXPLORER</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">ASSIGNED AMIGA</span>
+            <span class="nexus-id-value">Amiga 1200 (AGA)</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">SPACEPACK</span>
+            <span class="nexus-id-value" style="color:var(--atom-seafoam);">3 items found</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">LOG BOOK</span>
+            <span class="nexus-id-value">12 entries</span>
+          </div>
+          <div class="nexus-id-field">
+            <span class="nexus-id-label">INSIGNIA</span>
+            <span class="nexus-id-value" style="color:var(--atom-yellow);">Pioneer &bull; Scout</span>
+          </div>
+          <div class="clearance-bar">
+            <div class="clearance-pip filled"></div>
+            <div class="clearance-pip"></div>
+            <div class="clearance-pip"></div>
+            <div class="clearance-pip"></div>
+          </div>
+          <div class="clearance-label">CLEARANCE: EXPLORER (LEVEL 1 / 4)</div>
+        </div>
+      </div>
+
+      <!-- Auth lock -->
+      <div class="locked-overlay">
+        <div class="locked-title">CLEARANCE REQUIRED</div>
+        <div class="locked-desc">
+          Authentication launches in Phase 3. Register with your Google, GitHub, or Apple account to receive your NexusID, Clearance Level, and Spacepack. Your identity is shared across the Commodore Universe — one login for all properties.
+        </div>
+        <button style="background:var(--wb-orange);border:none;padding:10px 24px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:#111;cursor:pointer;">REQUEST CLEARANCE &mdash; PHASE 3</button>
+      </div>
+
+      <!-- Clearance Levels -->
+      <div class="subhead">CLEARANCE LEVELS</div>
+
+      <div class="clearance-level-row" style="border-color:rgba(94,203,170,0.4);">
+        <div class="clearance-level-name" style="color:var(--atom-seafoam);">EXPLORER</div>
+        <div class="clearance-level-perks">NexusID registration, Spacepack access, Tier 1 (OCS) palette, Station discovery, Signal Beacon eligible.</div>
+      </div>
+      <div class="clearance-level-row" style="border-color:rgba(104,180,212,0.4);">
+        <div class="clearance-level-name" style="color:var(--atom-sky);">PILOT</div>
+        <div class="clearance-level-perks">Tier 2 (ECS) palette unlock, Log Book (12 entries), Nexus Lounge post access, cross-universe Insignia display.</div>
+      </div>
+      <div class="clearance-level-row" style="border-color:rgba(255,136,0,0.4);">
+        <div class="clearance-level-name" style="color:var(--wb-orange);">COMMANDER</div>
+        <div class="clearance-level-perks">Tier 3 (AGA) palette unlock, extended Log Book, Warp Terminal submission rights, Transmission Board access.</div>
+      </div>
+      <div class="clearance-level-row" style="border-color:rgba(255,209,102,0.4);">
+        <div class="clearance-level-name" style="color:var(--atom-yellow);">ADMIRAL</div>
+        <div class="clearance-level-perks">Full access to all Nexus systems. Station admin capabilities where applicable. Fleet-wide recognition.</div>
+      </div>
+
+      <!-- Spacepack -->
+      <div class="subhead">YOUR SPACEPACK</div>
+      <div class="terminal-block">
+        <span class="prompt">NEXUS:1/mission/pack&gt; </span><strong>SPACEPACK STATUS</strong><br>
+        <span class="comment">— The Spacepack holds items discovered during exploration of the Nexus.</span><br>
+        <span class="comment">— Items are found by visiting specific stations — locations are randomised per crew member.</span><br>
+        <span class="comment">— The Signal Beacon is the first item. Find it to unlock ambient MOD audio.</span><br>
+        <span class="comment">— Spacepack is the Nexus rendering of the Commodore Universe Satchel.</span><br>
+        <span class="comment">— AVAILABLE: Phase 3</span>
+      </div>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/mission-control/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>COMMAND BRIDGE — AUTH: PHASE 3</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

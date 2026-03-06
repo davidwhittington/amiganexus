@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPGA Foundry — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--teal"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">FPGA FOUNDRY — AmigaNexus — STATION 02 — CRYSTAL REACTOR ARRAYS</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <div class="section-header">
+        <div class="section-station-num">STATION 02 &nbsp;/&nbsp; CRYSTAL REACTOR ARRAYS</div>
+        <div class="section-title">FPGA FOUNDRY</div>
+        <div class="section-desc">Hardware-accurate Amiga computation via Field Programmable Gate Arrays. The Amiga's custom chips, reimplemented in silicon.</div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- MiSTer - Featured -->
+      <div class="subhead">MiSTer FPGA — PRIMARY PLATFORM</div>
+      <div class="featured-card data-card">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">MiSTer FPGA &mdash; The Definitive Amiga FPGA Platform</div>
+            <div class="data-card-subtitle">github.com/MiSTer-devel &nbsp;/&nbsp; OPEN SOURCE &nbsp;/&nbsp; DE10-NANO BASED</div>
+          </div>
+          <span class="tag tag-seafoam" style="margin-left:auto;">RECOMMENDED</span>
+        </div>
+        <div class="data-card-body">
+          <p>MiSTer implements the Amiga's custom chip set (Agnus, Denise, Paula, CIA) directly in FPGA logic on the Intel Cyclone V DE10-Nano board. This is not emulation — the chips are synthesised as digital circuits, running with cycle-accurate timing on actual FPGA hardware.</p>
+          <p>The result: near-perfect Amiga compatibility, zero emulation overhead, HDMI output with scanline simulation, and USB controller support — all on commodity hardware that costs less than a mid-range GPU.</p>
+        </div>
+      </div>
+
+      <div class="subhead">MISTER HARDWARE REQUIREMENTS</div>
+      <div class="card-grid-3">
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">DE10-Nano Board</div><div class="data-card-subtitle">REQUIRED — CORE HARDWARE</div></div></div>
+          <div class="data-card-body">
+            <p>The Terasic DE10-Nano is the base board hosting the Cyclone V FPGA. Available from Terasic directly, Amazon, and Arrow Electronics. Approximately $120–150 USD.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">I/O Board</div><div class="data-card-subtitle">STRONGLY RECOMMENDED</div></div></div>
+          <div class="data-card-body">
+            <p>Adds USB hub, analog audio out, user port connector, and direct board mounting. MiSTer FPGA I/O Board v6.1 or later. Available from multiple vendors including MiSTerAddons and Antoniovillena.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">RAM Add-on</div><div class="data-card-subtitle">REQUIRED FOR AMIGA 1200 CORE</div></div></div>
+          <div class="data-card-body">
+            <p>The 128MB SDRAM add-on board is required for the Amiga core. Standard 32MB module works for most uses. 128MB recommended for AGA and WHDLoad game libraries.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subhead">MISTER SETUP — AMIGA CORE</div>
+      <div class="terminal-block">
+        <span class="prompt">FPGA:1/mister/amiga&gt; </span><strong>INSTALLATION STEPS</strong><br>
+        <br>
+        <span class="comment">1. Download MiSTer SD card image from misterfpga.org</span><br>
+        <span class="comment">   — Use the MiSTer Downloader script or SD Installer image</span><br>
+        <br>
+        <span class="comment">2. Copy your Kickstart ROM to /media/fat/games/Amiga/</span><br>
+        <span class="comment">   — Rename: kick13.rom (Kickstart 1.3) or kick31.rom (3.1)</span><br>
+        <span class="comment">   — AmigaOS 3.2 ROM also accepted (kick32.rom)</span><br>
+        <br>
+        <span class="comment">3. Load the Minimig (Amiga) core from the MiSTer menu</span><br>
+        <span class="comment">   — Select OCS/ECS for A500 compatibility</span><br>
+        <span class="comment">   — Select AGA for A1200/A4000 compatibility</span><br>
+        <br>
+        <span class="comment">4. Mount ADF disk images or WHDLoad installs via the OSD menu</span><br>
+        <span class="comment">   — HDMI output works out of the box with scanline options</span><br>
+        <br>
+        <span class="prompt">FPGA:1/mister/amiga&gt; </span>CORE_LOADED — AMIGA ONLINE<span style="color:#FF8800;animation:blink 1s step-end infinite;display:inline-block;"> _</span>
+      </div>
+
+      <!-- Vampire -->
+      <div class="subhead">VAMPIRE V4 — APOLLO CORE</div>
+      <div class="card-grid-2">
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">Vampire V4 Standalone</div>
+              <div class="data-card-subtitle">apollo-core.com &nbsp;/&nbsp; STANDALONE AMIGA FPGA</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>The Vampire V4 Standalone is a fully self-contained Amiga FPGA computer with no original hardware required. It implements the Apollo 68080 processor (a custom 68k-compatible super-scalar CPU) and the SAGA chipset — a superset of the original Amiga chips with enhanced graphics modes up to 1080p.</p>
+            <p>Runs Apollo OS, a Workbench-compatible OS, or standard Kickstart ROMs. Available in V4 SA and V4 SA+ models.</p>
+          </div>
+          <div class="data-card-footer">
+            <a href="https://www.apollo-core.com" class="warp-btn warp-btn-sm" data-warp="Apollo Core" data-warp-url="https://www.apollo-core.com">WARP TO APOLLO</a>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header">
+            <div>
+              <div class="data-card-title">Vampire Accelerators</div>
+              <div class="data-card-subtitle">FOR REAL AMIGA HARDWARE</div>
+            </div>
+          </div>
+          <div class="data-card-body">
+            <p>Vampire cards plug into real Amiga motherboards as accelerators, replacing the CPU slot with the Apollo 68080 FPGA core. Available for A500, A600, A1200, and CD32.</p>
+            <p>Dramatically increases speed (equivalent to a 200MHz 68k) and adds the SAGA chipset's enhanced graphics and audio capabilities to existing hardware.</p>
+            <ul>
+              <li>V4 for A500 — Zorro slot compatible</li>
+              <li>V4 for A1200 — trapdoor slot</li>
+              <li>V4 for A600 — edge connector</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- FPGAArcade -->
+      <div class="subhead">FPGAARCADE REPLAY</div>
+      <div class="data-card">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">FPGAArcade Replay 1 &amp; Replay 2</div>
+            <div class="data-card-subtitle">fpgaarcade.com &nbsp;/&nbsp; MIKE STIRLING</div>
+          </div>
+        </div>
+        <div class="data-card-body">
+          <p>The Replay boards are FPGA platforms from FPGAArcade that also support Amiga cores alongside arcade hardware simulation. Less mainstream than MiSTer but respected for build quality and the Amiga OCS core accuracy. The Replay 2 supports AGA. Community-driven, open-source cores.</p>
+        </div>
+        <div class="data-card-footer">
+          <a href="https://www.fpgaarcade.com" class="warp-btn warp-btn-sm" data-warp="FPGAArcade" data-warp-url="https://www.fpgaarcade.com">WARP</a>
+        </div>
+      </div>
+
+      <!-- Comparison -->
+      <div class="subhead">MiSTer vs VAMPIRE — WHICH?</div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>FACTOR</th>
+            <th>MiSTer FPGA</th>
+            <th>Vampire V4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Primary purpose</td>
+            <td>Multi-system FPGA (Amiga + 100+ other platforms)</td>
+            <td>Amiga-first FPGA computer</td>
+          </tr>
+          <tr>
+            <td>Amiga compatibility</td>
+            <td>OCS/ECS/AGA — near-perfect for classic software</td>
+            <td>SAGA superset — runs classic + enhanced SAGA software</td>
+          </tr>
+          <tr>
+            <td>CPU</td>
+            <td>Original 68000 cycle timing</td>
+            <td>Apollo 68080 — faster, not 100% cycle-compatible</td>
+          </tr>
+          <tr>
+            <td>Standalone?</td>
+            <td>Yes (DE10-Nano + I/O board)</td>
+            <td>V4 SA is standalone; accelerator cards need real Amiga</td>
+          </tr>
+          <tr>
+            <td>Other platforms</td>
+            <td>C64, NES, SNES, arcade, 100+ cores</td>
+            <td>Amiga-focused only</td>
+          </tr>
+          <tr>
+            <td>Verdict</td>
+            <td>Best for classic accuracy + multi-platform use</td>
+            <td>Best for Amiga power users who want an enhanced Amiga</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div><!-- /wb-content -->
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/fpga/</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>CRYSTAL REACTORS ONLINE — MISTER CORE ACTIVE</span>
+    </div>
+  </div>
+</div>
+
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>
