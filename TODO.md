@@ -48,7 +48,7 @@ Current phase: **Phase 1 complete** — static site live at amiganexus.com
 - [ ] Terms / privacy acknowledgement on first login (checkbox in clearance modal)
 
 ### NexusID
-- [ ] NexusID generation — derive from Supabase user UUID (format: `C` + 4-digit hash)
+- [ ] C=ID assignment — sequential from C=10000, issued by Commodore Universe auth layer (format: `C=10427`)
 - [ ] NexusID card component — renders in Mission Control with live user data
 - [ ] Assigned Amiga model — cosmetic choice at signup (A500, A1200, A2000, A4000, CD32, CDTV, A600, A3000, Amiga 1000)
 - [ ] Avatar initials — derived from display name, rendered in seafoam circle
