@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Signal Lost — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F680;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --wb-blue:    #0055AA;
+  --wb-grey:    #AAAAAA;
+  --wb-orange:  #FF8800;
+  --wb-white:   #FFFFFF;
+  --seafoam:    #5ECBAA;
+  --sky:        #68B4D4;
+  --coral:      #FF5E5B;
+  --deep:       #060810;
+  --space-navy: #0A0E1A;
+}
+
+html, body {
+  height: 100%;
+  background: var(--deep);
+  color: var(--wb-white);
+  font-family: 'Aldrich', sans-serif;
+  overflow: hidden;
+}
+
+/* Starfield */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Workbench window */
+.wb-page-wrap {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.wb-window {
+  width: 100%;
+  max-width: 640px;
+  border: 2px solid var(--wb-grey);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+}
+
+.wb-titlebar {
+  background: var(--wb-blue);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  height: 28px;
+}
+
+.wb-gadget {
+  width: 18px; height: 18px;
+  border: 2px solid var(--wb-grey);
+  background: var(--wb-grey);
+  flex-shrink: 0;
+}
+
+.wb-title {
+  flex: 1;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--wb-white);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.wb-gadget-right {
+  width: 18px; height: 18px;
+  border: 2px solid var(--wb-grey);
+  background: var(--wb-grey);
+  margin-left: auto;
+}
+
+.wb-content {
+  background: var(--space-navy);
+  padding: 32px 28px 28px;
+  text-align: center;
+}
+
+.error-code {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(64px, 16vw, 120px);
+  font-weight: 900;
+  color: var(--coral);
+  letter-spacing: 4px;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(255,94,91,0.4), 0 0 80px rgba(255,94,91,0.15);
+}
+
+.error-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--wb-orange);
+  letter-spacing: 5px;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.error-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.error-divider-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(94,203,170,0.4), transparent);
+}
+
+.error-divider-pip {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--seafoam);
+  box-shadow: 0 0 8px var(--seafoam);
+}
+
+.terminal-block {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(94,203,170,0.2);
+  border-left: 3px solid var(--seafoam);
+  padding: 14px 16px;
+  text-align: left;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  margin-bottom: 24px;
+}
+
+.prompt { color: var(--wb-orange); }
+.comment { color: var(--wb-grey); }
+.error-highlight { color: var(--coral); }
+
+.error-desc {
+  font-family: 'Aldrich', sans-serif;
+  font-size: 13px;
+  color: var(--wb-grey);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  padding: 9px 20px;
+  border: 1px solid;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.nav-btn--home {
+  border-color: rgba(94,203,170,0.5);
+  color: var(--seafoam);
+  background: rgba(94,203,170,0.07);
+}
+
+.nav-btn--home:hover {
+  background: rgba(94,203,170,0.14);
+  box-shadow: 0 0 14px rgba(94,203,170,0.2);
+}
+
+.nav-btn--map {
+  border-color: rgba(104,180,212,0.4);
+  color: var(--sky);
+  background: rgba(104,180,212,0.05);
+}
+
+.nav-btn--map:hover {
+  background: rgba(104,180,212,0.12);
+}
+
+.wb-statusbar {
+  background: var(--wb-blue);
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--wb-white);
+  letter-spacing: 1px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px; height: 12px;
+  background: var(--wb-orange);
+  vertical-align: bottom;
+  animation: blink 1s step-end infinite;
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">SYSTEM ALERT — AmigaNexus — SIGNAL LOST</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+
+    <div class="wb-content">
+
+      <div class="error-code">404</div>
+      <div class="error-label">SIGNAL LOST &mdash; STATION NOT FOUND</div>
+
+      <div class="error-divider">
+        <div class="error-divider-line"></div>
+        <div class="error-divider-pip"></div>
+        <div class="error-divider-line"></div>
+      </div>
+
+      <div class="terminal-block">
+        <span class="prompt">NEXUS:1/nav&gt; </span><span class="error-highlight">LOCATE STATION</span><br>
+        <span class="comment">-- SCANNING ALL SECTORS...</span><br>
+        <span class="comment">-- SIGNAL LOST. STATION NOT ON CHART.</span><br>
+        <span class="comment">-- COORDINATES RETURNED: NULL</span><br>
+        <span class="prompt">NEXUS:1/nav&gt; </span><span class="cursor"></span>
+      </div>
+
+      <p class="error-desc">
+        The station you&rsquo;re trying to reach doesn&rsquo;t exist in this sector of the Amiga Galaxy.
+        It may have warped to a new location, been decommissioned, or the coordinates were entered incorrectly.
+      </p>
+
+      <div class="nav-links">
+        <a href="/" class="nav-btn nav-btn--home">&#x2302;&nbsp; RETURN TO NEXUS</a>
+        <a href="/map.html" class="nav-btn nav-btn--map">&#x2726;&nbsp; GALACTIC MAP</a>
+      </div>
+
+    </div>
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/error/404</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>SIGNAL: NONE</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  /* Stars */
+  var el = document.getElementById('stars');
+  var frag = document.createDocumentFragment();
+  for (var i = 0; i < 140; i++) {
+    var s = document.createElement('div');
+    var size = Math.random() < 0.1 ? 2 : 1;
+    s.style.cssText = [
+      'position:absolute',
+      'border-radius:50%',
+      'left:' + (Math.random()*100).toFixed(2) + '%',
+      'top:'  + (Math.random()*100).toFixed(2) + '%',
+      'width:' + size + 'px',
+      'height:' + size + 'px',
+      'background:rgba(255,255,255,' + (0.2+Math.random()*0.8).toFixed(2) + ')',
+      'animation:twinkle ' + (3+Math.random()*4).toFixed(1) + 's ' + (Math.random()*5).toFixed(1) + 's ease-in-out infinite alternate',
+    ].join(';');
+    frag.appendChild(s);
+  }
+  el.appendChild(frag);
+  var ks = document.createElement('style');
+  ks.textContent = '@keyframes twinkle{from{opacity:.1}to{opacity:.9}}';
+  document.head.appendChild(ks);
+
+  /* Clock */
+  function tick() {
+    var d = new Date();
+    var pad = function(n){ return String(n).padStart(2,'0'); };
+    document.getElementById('wb-clock').textContent =
+      pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+  tick();
+  setInterval(tick, 1000);
+}());
+</script>
+
+</body>
+</html>

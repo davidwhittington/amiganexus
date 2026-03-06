@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>500 — Reactor Fault — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F680;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --wb-blue:    #0055AA;
+  --wb-grey:    #AAAAAA;
+  --wb-orange:  #FF8800;
+  --wb-white:   #FFFFFF;
+  --seafoam:    #5ECBAA;
+  --sky:        #68B4D4;
+  --coral:      #FF5E5B;
+  --yellow:     #FFD166;
+  --deep:       #060810;
+  --space-navy: #0A0E1A;
+}
+html, body { height: 100%; background: var(--deep); color: var(--wb-white); font-family: 'Aldrich', sans-serif; overflow: hidden; }
+.stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.wb-page-wrap { position: relative; z-index: 1; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+.wb-window { width: 100%; max-width: 640px; border: 2px solid var(--wb-grey); box-shadow: 4px 4px 0 rgba(0,0,0,0.6); }
+.wb-titlebar { background: var(--wb-orange); display: flex; align-items: center; gap: 4px; padding: 4px 8px; height: 28px; }
+.wb-gadget { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); background: rgba(0,0,0,0.2); flex-shrink: 0; }
+.wb-title { flex: 1; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 2px; text-align: center; }
+.wb-gadget-right { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); background: rgba(0,0,0,0.2); margin-left: auto; }
+.wb-content { background: var(--space-navy); padding: 32px 28px 28px; text-align: center; }
+.error-code { font-family: 'Orbitron', sans-serif; font-size: clamp(64px, 16vw, 120px); font-weight: 900; color: var(--wb-orange); letter-spacing: 4px; line-height: 1; text-shadow: 0 0 40px rgba(255,136,0,0.4), 0 0 80px rgba(255,136,0,0.15); }
+.error-label { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--wb-orange); letter-spacing: 5px; margin-top: 10px; margin-bottom: 24px; }
+.error-divider { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 24px; }
+.error-divider-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,136,0,0.4), transparent); }
+.error-divider-pip { width: 5px; height: 5px; border-radius: 50%; background: var(--wb-orange); box-shadow: 0 0 8px var(--wb-orange); }
+.terminal-block { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,136,0,0.2); border-left: 3px solid var(--wb-orange); padding: 14px 16px; text-align: left; font-family: 'Share Tech Mono', monospace; font-size: 12px; line-height: 1.9; margin-bottom: 24px; }
+.prompt { color: var(--wb-orange); }
+.comment { color: var(--wb-grey); }
+.error-highlight { color: var(--coral); }
+.warn { color: var(--yellow); }
+.error-desc { font-family: 'Aldrich', sans-serif; font-size: 13px; color: var(--wb-grey); line-height: 1.65; margin-bottom: 28px; }
+.nav-links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.nav-btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 3px; padding: 9px 20px; border: 1px solid; text-decoration: none; transition: background 0.2s, box-shadow 0.2s; }
+.nav-btn--home { border-color: rgba(94,203,170,0.5); color: var(--seafoam); background: rgba(94,203,170,0.07); }
+.nav-btn--home:hover { background: rgba(94,203,170,0.14); box-shadow: 0 0 14px rgba(94,203,170,0.2); }
+.wb-statusbar { background: var(--wb-orange); display: flex; justify-content: space-between; padding: 3px 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: #111; letter-spacing: 1px; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.cursor { display: inline-block; width: 7px; height: 12px; background: var(--wb-orange); vertical-align: bottom; animation: blink 1s step-end infinite; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wb-page-wrap">
+  <div class="wb-window">
+
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">REACTOR FAULT &mdash; AmigaNexus &mdash; INTERNAL ERROR</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+
+    <div class="wb-content">
+
+      <div class="error-code">500</div>
+      <div class="error-label">REACTOR FAULT &mdash; INTERNAL SERVER ERROR</div>
+
+      <div class="error-divider">
+        <div class="error-divider-line"></div>
+        <div class="error-divider-pip"></div>
+        <div class="error-divider-line"></div>
+      </div>
+
+      <div class="terminal-block">
+        <span class="prompt">NEXUS:1/sys&gt; </span><span class="error-highlight">DIAGNOSTICS RUN</span><br>
+        <span class="warn">!! REACTOR CORE FAULT DETECTED</span><br>
+        <span class="comment">-- CAUSE: INTERNAL SERVER ERROR (500)</span><br>
+        <span class="comment">-- ENGINEERS HAVE BEEN NOTIFIED</span><br>
+        <span class="comment">-- STATION STABLE. ATTEMPT RETURN IN 60s.</span><br>
+        <span class="prompt">NEXUS:1/sys&gt; </span><span class="cursor"></span>
+      </div>
+
+      <p class="error-desc">
+        Something went wrong deep in the station reactor. This is our fault, not yours.
+        The engineering crew has been alerted and will have things back online shortly.
+      </p>
+
+      <div class="nav-links">
+        <a href="/" class="nav-btn nav-btn--home">&#x2302;&nbsp; RETURN TO NEXUS</a>
+      </div>
+
+    </div>
+
+    <div class="wb-statusbar">
+      <span>AmigaNexus:1/error/500</span>
+      <span id="wb-clock">00:00:00</span>
+      <span>REACTOR: FAULT</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var el = document.getElementById('stars');
+  var frag = document.createDocumentFragment();
+  for (var i = 0; i < 140; i++) {
+    var s = document.createElement('div');
+    var size = Math.random() < 0.1 ? 2 : 1;
+    s.style.cssText = ['position:absolute','border-radius:50%','left:'+(Math.random()*100).toFixed(2)+'%','top:'+(Math.random()*100).toFixed(2)+'%','width:'+size+'px','height:'+size+'px','background:rgba(255,255,255,'+(0.2+Math.random()*0.8).toFixed(2)+')','animation:twinkle '+(3+Math.random()*4).toFixed(1)+'s '+(Math.random()*5).toFixed(1)+'s ease-in-out infinite alternate'].join(';');
+    frag.appendChild(s);
+  }
+  el.appendChild(frag);
+  var ks = document.createElement('style');
+  ks.textContent = '@keyframes twinkle{from{opacity:.1}to{opacity:.9}}';
+  document.head.appendChild(ks);
+  function tick() {
+    var d = new Date(), pad = function(n){ return String(n).padStart(2,'0'); };
+    document.getElementById('wb-clock').textContent = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  }
+  tick(); setInterval(tick, 1000);
+}());
+</script>
+
+</body>
+</html>
