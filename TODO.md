@@ -19,7 +19,7 @@ Current phase: **Phase 1 complete** — static site live at amiganexus.com
 
 - [ ] Set up `server/` directory — Bun + Hono
 - [ ] nginx reverse proxy config (or confirm Apache proxy setup) to `localhost:3000`
-- [ ] Create Supabase project — Auth + Postgres + Storage
+- [ ] Create Supabase project — Auth + Postgres + Storage (this is the SHARED Commodore Universe project — all 4 sites use it)
 - [ ] DB schema: `users`, `spacepack_items`, `discovery_events`, `warp_logs`, `admin_settings`
 - [ ] Signal Tower admin API — POST new news entries via authenticated endpoint
 - [ ] Warp counter — log warp events to `warp_logs` (anonymous, no PII)
@@ -211,8 +211,12 @@ Current phase: **Phase 1 complete** — static site live at amiganexus.com
 
 ## Phase 6 — Commodore Universe Integration
 
-- [ ] Shared Supabase project across all Commodore Universe properties
-- [ ] Same users table — one account for Nexus, Caverns, and Universe hub
+> **Note:** C=ID is shared across all 4 properties from day one — Commodore Universe hub,
+> Commodore Caverns, Amiga Nexus, PETSCII Bedrock. Single Supabase project, single users
+> table, single C=ID sequence. Auth must be wired to the shared project, not a per-site one.
+
+- [ ] Shared Supabase project across all 4 Commodore Universe properties
+- [ ] Same users table — one account works everywhere
 - [ ] C=ID rendered in Commodore Caverns as Satchel; in Amiga Nexus as Spacepack — same data
 - [ ] Cross-universe Insignia — earn at one site, displayed everywhere
 - [ ] Clearance Level feeds back into Commodore Universe rank display
