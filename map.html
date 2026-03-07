@@ -440,6 +440,31 @@
             <text x="896" y="539" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">10</text>
           </g>
 
+          <!-- 11: Nexus Protocol Game (570, 160) — distinct game-controller style -->
+          <g class="station-group" data-key="game" data-href="/game/" data-num="11" data-name="NEXUS PROTOCOL" data-desc="Sector control strategy game. Command OCS, AGA, or FPGA forces across the Amiga Galaxy. Turn-based, asymmetric, emergent." data-status="GAME ACTIVE" data-color="#FFD166">
+            <circle class="station-pulse" cx="570" cy="160" r="22" fill="rgba(255,209,102,0.06)" stroke="rgba(255,209,102,0.2)" stroke-width="1" style="animation-duration:1.8s;"/>
+            <!-- Game controller icon (stylised) -->
+            <rect x="556" y="149" width="28" height="18" rx="5" fill="rgba(255,209,102,0.1)" stroke="#FFD166" stroke-width="1.3"/>
+            <!-- D-pad left side -->
+            <rect x="560" y="155" width="5" height="2" rx="0.5" fill="#FFD166" opacity="0.9"/>
+            <rect x="562" y="153" width="1" height="6" rx="0.5" fill="#FFD166" opacity="0.9"/>
+            <!-- Buttons right side -->
+            <circle cx="576" cy="155" r="1.5" fill="#FF5E5B" opacity="0.9"/>
+            <circle cx="580" cy="157" r="1.5" fill="#5ECBAA" opacity="0.9"/>
+            <circle cx="576" cy="159" r="1.5" fill="#68B4D4" opacity="0.9"/>
+            <!-- Select/start -->
+            <rect x="567" y="156" width="3" height="1" rx="0.5" fill="#FFD166" opacity="0.5"/>
+            <rect x="571" y="156" width="3" height="1" rx="0.5" fill="#FFD166" opacity="0.5"/>
+            <!-- Pulsing ring (faster for "game active" feel) -->
+            <circle cx="570" cy="158" r="3" fill="#FFD166" filter="url(#glow-orange)" opacity="0.8"/>
+            <!-- Lane to Lounge -->
+            <line x1="548" y1="162" x2="522" y2="290" stroke="rgba(255,209,102,0.2)" stroke-width="1" stroke-dasharray="4 8" class="lane"/>
+            <!-- Lane to FPGA -->
+            <line x1="556" y1="155" x2="428" y2="90" stroke="rgba(255,209,102,0.18)" stroke-width="1" stroke-dasharray="4 8" class="lane"/>
+            <text x="570" y="195" font-family="Share Tech Mono,monospace" font-size="7.5" fill="rgba(255,209,102,0.9)" text-anchor="middle" letter-spacing="0.8">NEXUS PROTOCOL</text>
+            <text x="570" y="204" font-family="Share Tech Mono,monospace" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">11</text>
+          </g>
+
           <!-- Coordinate border -->
           <rect x="0" y="0" width="1000" height="560" fill="none" stroke="rgba(94,203,170,0.12)" stroke-width="2"/>
           <!-- Corner tick marks -->
@@ -480,7 +505,7 @@
     <div class="wb-statusbar">
       <span>AmigaNexus:1/Galactic-Map/</span>
       <span id="wb-clock">00:00:00</span>
-      <span>10 STATIONS CHARTED — 0 WARPS PLOTTED</span>
+      <span>11 STATIONS CHARTED — 1 GAME ACTIVE</span>
     </div>
   </div>
 </div>
@@ -506,6 +531,7 @@
 <script src="./js/warp.js"></script>
 <script src="./js/nav.js"></script>
 <script src="./js/spacepack.js"></script>
+<script src="./js/boing.js"></script>
 <script>
   // Map station interactions
   const panel     = document.getElementById('map-info-panel');

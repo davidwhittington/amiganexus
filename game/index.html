@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Protocol — Amiga Nexus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2694;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<style>
+
+/* ── Game page overrides ─────────────────────────── */
+.wb-content { padding: 0; min-height: 0; }
+
+/* ── Faction Select ──────────────────────────────── */
+#np-faction-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 48px 24px 60px;
+  min-height: 520px;
+  background: linear-gradient(160deg, #060C1E 0%, #040810 100%);
+}
+.np-select-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 900;
+  color: var(--wb-white);
+  letter-spacing: 4px;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(94,203,170,0.35);
+}
+.np-select-subtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--wb-grey);
+  letter-spacing: 3px;
+  text-align: center;
+}
+.np-faction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 780px;
+}
+.np-faction-card {
+  background: rgba(6,12,30,0.92);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+}
+.np-faction-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 24px rgba(255,255,255,0.08);
+}
+.np-faction-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.np-faction-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.np-faction-body {
+  padding: 14px;
+}
+.np-faction-tag {
+  font-family: 'Aldrich', sans-serif;
+  font-size: 12px;
+  color: var(--wb-grey);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.np-faction-trait {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(170,170,170,0.65);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.np-faction-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+.np-faction-btn:hover { background: rgba(255,255,255,0.06); }
+
+/* ── Game layout ─────────────────────────────────── */
+#np-game {
+  display: none;
+  flex-direction: column;
+}
+
+/* HUD bar */
+#np-hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.35);
+  border-bottom: 1px solid rgba(94,203,170,0.12);
+  flex-wrap: wrap;
+}
+.np-hud-chip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--wb-grey);
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.np-hud-chip.highlight { color: var(--atom-seafoam); border-color: rgba(94,203,170,0.3); }
+.np-hud-chip.signal    { color: var(--atom-yellow);  border-color: rgba(255,209,102,0.3); }
+.np-hud-spacer { flex: 1; }
+#np-phase-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #111;
+  background: var(--wb-orange);
+  border: none;
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+#np-phase-btn:hover:not(:disabled) { background: #FFB830; box-shadow: 0 0 12px rgba(255,136,0,0.5); }
+#np-phase-btn:disabled { opacity: 0.45; cursor: default; }
+
+/* Main arena */
+#np-arena {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  min-height: 440px;
+}
+
+/* Map area */
+#np-map-area {
+  position: relative;
+  background: linear-gradient(160deg, #050A18 0%, #040810 100%);
+  border-right: 1px solid rgba(94,203,170,0.1);
+  overflow: hidden;
+}
+#np-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+/* Side panel */
+#np-right {
+  display: flex;
+  flex-direction: column;
+  background: rgba(4,8,20,0.95);
+  overflow: hidden;
+}
+#np-side-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--wb-orange);
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid rgba(255,136,0,0.15);
+}
+#np-side-panel {
+  flex: 1;
+  padding: 10px 12px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(94,203,170,0.2) transparent;
+  font-size: 11px;
+}
+#np-log-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(94,203,170,0.6);
+  padding: 6px 12px 4px;
+  border-top: 1px solid rgba(94,203,170,0.1);
+  border-bottom: 1px solid rgba(94,203,170,0.08);
+}
+#np-log {
+  padding: 6px 12px 10px;
+  overflow-y: auto;
+  max-height: 160px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(94,203,170,0.15) transparent;
+}
+
+/* Win screen overlay */
+#np-win-screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(2,4,14,0.92);
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.np-win-box {
+  background: rgba(6,12,30,0.98);
+  border: 2px solid var(--wb-grey);
+  box-shadow: 0 0 0 1px #555, 4px 4px 0 #333, 0 0 60px rgba(94,203,170,0.2);
+  padding: 40px 48px;
+  text-align: center;
+  max-width: 460px;
+}
+.np-win-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--atom-seafoam);
+  text-shadow: 0 0 30px rgba(94,203,170,0.5);
+  margin-bottom: 8px;
+}
+.np-win-faction {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--wb-orange);
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
+.np-win-reason {
+  font-family: 'Aldrich', sans-serif;
+  font-size: 14px;
+  color: var(--wb-grey);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.np-win-stats {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(170,170,170,0.55);
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+.np-win-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  background: var(--wb-orange);
+  border: none;
+  padding: 12px 32px;
+  color: #111;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.np-win-btn:hover { background: #FFB830; }
+
+/* Side panel inner elements */
+.np-panel-hint {
+  font-family: 'Aldrich', sans-serif;
+  font-size: 12px;
+  color: rgba(170,170,170,0.5);
+  text-align: center;
+  padding: 20px 8px;
+  line-height: 1.6;
+}
+.np-panel-hint-active {
+  color: var(--atom-yellow);
+  border: 1px solid rgba(255,209,102,0.2);
+  background: rgba(255,209,102,0.04);
+  padding: 8px;
+  font-size: 11px;
+  text-align: left;
+}
+.np-panel-section-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wb-white);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.np-panel-meta { margin-bottom: 12px; display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.np-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 2px 6px;
+  color: var(--wb-grey);
+}
+.np-tag-orange { color: var(--wb-orange); border-color: rgba(255,136,0,0.3); }
+.np-tag-red    { color: var(--atom-coral); border-color: rgba(255,94,91,0.3); }
+.np-panel-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(94,203,170,0.5);
+  text-transform: uppercase;
+  margin: 10px 0 4px;
+  border-bottom: 1px solid rgba(94,203,170,0.1);
+  padding-bottom: 3px;
+}
+.np-panel-empty { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(170,170,170,0.3); padding: 4px 0; letter-spacing: 1px; }
+.np-unit-list { display: flex; flex-direction: column; gap: 2px; }
+.np-unit-list-enemy .np-unit-name { color: rgba(255,94,91,0.8); }
+.np-unit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  background: rgba(255,255,255,0.03);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+}
+.np-unit-count { color: var(--wb-orange); min-width: 18px; }
+.np-unit-name  { flex: 1; color: var(--wb-light); }
+.np-unit-stats { color: rgba(170,170,170,0.5); font-size: 9px; white-space: nowrap; }
+.np-build-list { display: flex; flex-direction: column; gap: 2px; }
+.np-build-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+}
+.np-build-disabled { opacity: 0.35; }
+.np-build-name { flex: 1; color: var(--wb-light); }
+.np-build-cost { color: var(--atom-yellow); }
+.np-build-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: rgba(255,136,0,0.15);
+  border: 1px solid rgba(255,136,0,0.4);
+  color: var(--wb-orange);
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.np-build-btn:hover:not(:disabled) { background: rgba(255,136,0,0.3); }
+.np-build-btn:disabled { opacity: 0.3; cursor: default; }
+.np-log-line {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(170,170,170,0.7);
+  letter-spacing: 0.5px;
+  line-height: 1.8;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.np-log-line:first-child { color: var(--atom-seafoam); }
+
+/* Statusbar */
+#np-statusbar {
+  background: var(--wb-grey);
+  border-top: 2px solid #555;
+  display: flex;
+  padding: 3px 8px;
+  gap: 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #111;
+  justify-content: space-between;
+}
+
+@media (max-width: 720px) {
+  #np-arena { grid-template-columns: 1fr; }
+  #np-right  { border-top: 1px solid rgba(94,203,170,0.12); }
+  .np-faction-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="planet planet--teal" style="width:70px;height:70px;top:10%;right:5%;"></div>
+
+<!-- Corner bursts -->
+<svg class="corner-burst tl" viewBox="0 0 80 80" fill="none">
+  <line x1="0" y1="0" x2="60" y2="60" stroke="#FF8800" stroke-width="1"/>
+  <line x1="15" y1="0" x2="60" y2="45" stroke="#5ECBAA" stroke-width="0.7"/>
+  <line x1="0" y1="15" x2="45" y2="60" stroke="#5ECBAA" stroke-width="0.7"/>
+  <circle cx="0" cy="0" r="3" fill="#FF8800"/>
+</svg>
+<svg class="corner-burst tr" viewBox="0 0 80 80" fill="none">
+  <line x1="0" y1="0" x2="60" y2="60" stroke="#FF8800" stroke-width="1"/>
+  <line x1="15" y1="0" x2="60" y2="45" stroke="#5ECBAA" stroke-width="0.7"/>
+  <line x1="0" y1="15" x2="45" y2="60" stroke="#5ECBAA" stroke-width="0.7"/>
+  <circle cx="0" cy="0" r="3" fill="#FF8800"/>
+</svg>
+
+<div class="wb-page-wrap" style="max-width:1100px;">
+  <div class="wb-window">
+    <div class="wb-titlebar">
+      <div class="wb-gadget"></div>
+      <div class="wb-gadget"></div>
+      <div class="wb-title">NEXUS PROTOCOL — Sector Control Strategy — AmigaNexus Command Deck</div>
+      <div class="wb-gadget-right"></div>
+    </div>
+    <div class="wb-menubar" id="wb-nav"></div>
+
+    <div class="wb-content">
+
+      <!-- ── FACTION SELECT ── -->
+      <div id="np-faction-select">
+        <div class="np-select-title">NEXUS PROTOCOL</div>
+        <div class="np-select-subtitle">CHOOSE YOUR FACTION — THE GALAXY AWAITS YOUR COMMAND</div>
+
+        <div class="np-faction-grid">
+
+          <!-- OCS Command -->
+          <div class="np-faction-card" style="border-color:rgba(94,203,170,0.3);"
+               onclick="NexusProtocol.start('ocs')">
+            <div class="np-faction-header" style="background:rgba(94,203,170,0.07);border-color:rgba(94,203,170,0.15);">
+              <div class="np-faction-name" style="color:#5ECBAA;">OCS COMMAND</div>
+            </div>
+            <div class="np-faction-body">
+              <div class="np-faction-tag">Classic chipset. Balanced and reliable — no weaknesses, no compromises.</div>
+              <div class="np-faction-trait">› Starts with +2 bonus signal</div>
+              <div class="np-faction-trait">› Unique: Copper Shield (DEF 4)</div>
+              <div class="np-faction-trait">› Recommended for first-time commanders</div>
+              <button class="np-faction-btn" style="color:#5ECBAA;">ENLIST IN OCS ›</button>
+            </div>
+          </div>
+
+          <!-- AGA Imperium -->
+          <div class="np-faction-card" style="border-color:rgba(255,209,102,0.3);"
+               onclick="NexusProtocol.start('aga')">
+            <div class="np-faction-header" style="background:rgba(255,209,102,0.07);border-color:rgba(255,209,102,0.15);">
+              <div class="np-faction-name" style="color:#FFD166;">AGA IMPERIUM</div>
+            </div>
+            <div class="np-faction-body">
+              <div class="np-faction-tag">Maximum firepower. High risk, devastating payoff in pitched battles.</div>
+              <div class="np-faction-trait">› Starts with 1 extra Fighter unit</div>
+              <div class="np-faction-trait">› Unique: Blitter Cannon (ATK 5)</div>
+              <div class="np-faction-trait">› High risk — heavy losses in defeat</div>
+              <button class="np-faction-btn" style="color:#FFD166;">JOIN AGA IMPERIUM ›</button>
+            </div>
+          </div>
+
+          <!-- FPGA Collective -->
+          <div class="np-faction-card" style="border-color:rgba(104,180,212,0.3);"
+               onclick="NexusProtocol.start('fpga')">
+            <div class="np-faction-header" style="background:rgba(104,180,212,0.07);border-color:rgba(104,180,212,0.15);">
+              <div class="np-faction-name" style="color:#68B4D4;">FPGA COLLECTIVE</div>
+            </div>
+            <div class="np-faction-body">
+              <div class="np-faction-tag">Adaptive swarm tactics. Fast deployment, evolves mid-game to counter threats.</div>
+              <div class="np-faction-trait">› Starts with 2 extra Scout units</div>
+              <div class="np-faction-trait">› Unique: Adaptive Core (SPEED 2)</div>
+              <div class="np-faction-trait">› Micro-intensive — rewards active play</div>
+              <button class="np-faction-btn" style="color:#68B4D4;">JOIN FPGA COLLECTIVE ›</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="font-family:'Aldrich',sans-serif;font-size:12px;color:rgba(170,170,170,0.4);text-align:center;max-width:560px;line-height:1.7;">
+          Control 4 of 5 sectors, capture the enemy HQ, or hold the most territory after 20 turns.
+          All external links use Warp Drive. <a href="../map.html" style="color:rgba(94,203,170,0.6);">Return to Galactic Map</a>
+        </div>
+      </div>
+
+      <!-- ── GAME UI ── -->
+      <div id="np-game">
+
+        <!-- HUD -->
+        <div id="np-hud">
+          <div class="np-hud-chip" id="np-turn-label">TURN 1/20</div>
+          <div class="np-hud-chip highlight" id="np-faction-label">—</div>
+          <div class="np-hud-chip signal" id="np-signal-label">0 SIG</div>
+          <div class="np-hud-chip" id="np-phase-label">—</div>
+          <div class="np-hud-spacer"></div>
+          <button id="np-phase-btn" onclick="NexusProtocol.endPhase()">END PHASE ›</button>
+        </div>
+
+        <!-- Arena: map + side panel -->
+        <div id="np-arena">
+
+          <!-- Map -->
+          <div id="np-map-area">
+            <svg id="np-map-svg" viewBox="0 0 640 460" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="g-teal" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#5ECBAA" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#5ECBAA" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="g-blue" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#0055AA" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#0055AA" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="g-orange" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FF8800" stop-opacity="0.14"/>
+                  <stop offset="100%" stop-color="#FF8800" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="np-glow">
+                  <feGaussianBlur stdDeviation="4" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- Background -->
+              <rect width="640" height="460" fill="#040A16"/>
+
+              <!-- Grid -->
+              <g stroke="rgba(94,203,170,0.04)" stroke-width="1">
+                <line x1="0" y1="115" x2="640" y2="115"/>
+                <line x1="0" y1="230" x2="640" y2="230"/>
+                <line x1="0" y1="345" x2="640" y2="345"/>
+                <line x1="128" y1="0" x2="128" y2="460"/>
+                <line x1="256" y1="0" x2="256" y2="460"/>
+                <line x1="384" y1="0" x2="384" y2="460"/>
+                <line x1="512" y1="0" x2="512" y2="460"/>
+              </g>
+
+              <!-- Nebula regions -->
+              <ellipse cx="310" cy="140" rx="180" ry="120" fill="url(#g-teal)" opacity="0.7"/>
+              <ellipse cx="510" cy="160" rx="140" ry="100" fill="url(#g-orange)" opacity="0.6"/>
+              <ellipse cx="120" cy="310" rx="120" ry="100" fill="url(#g-blue)" opacity="0.5"/>
+
+              <!-- Sector labels (background) -->
+              <text x="280" y="28" font-family="Orbitron,sans-serif" font-size="9" font-weight="700"
+                    fill="rgba(104,180,212,0.12)" letter-spacing="4">JAY MINER REACH</text>
+              <text x="260" y="175" font-family="Orbitron,sans-serif" font-size="9" font-weight="700"
+                    fill="rgba(94,203,170,0.1)" letter-spacing="4">BOING SECTOR</text>
+              <text x="40" y="270" font-family="Orbitron,sans-serif" font-size="8" font-weight="700"
+                    fill="rgba(136,85,204,0.15)" letter-spacing="3" transform="rotate(-6 40 270)">LORRAINE</text>
+              <text x="470" y="125" font-family="Orbitron,sans-serif" font-size="8" font-weight="700"
+                    fill="rgba(255,107,53,0.15)" letter-spacing="3">AGA NEBULA</text>
+              <text x="280" y="430" font-family="Orbitron,sans-serif" font-size="7" font-weight="700"
+                    fill="rgba(255,94,91,0.12)" letter-spacing="2">DEEP ORBIT ZONE</text>
+
+              <!-- Hyperspace lanes -->
+              <g stroke-width="1" fill="none" stroke-dasharray="4 8" opacity="0.4">
+                <!-- jminer ↔ boing -->
+                <line x1="320" y1="110" x2="310" y2="200" stroke="rgba(94,203,170,0.5)"
+                      style="animation:np-lane 3s linear infinite;"/>
+                <!-- jminer ↔ lorraine -->
+                <line x1="295" y1="95" x2="155" y2="290" stroke="rgba(104,180,212,0.4)"
+                      style="animation:np-lane 4s linear infinite;"/>
+                <!-- jminer ↔ aga -->
+                <line x1="347" y1="95" x2="483" y2="170" stroke="rgba(255,136,0,0.4)"
+                      style="animation:np-lane 2.5s linear infinite;"/>
+                <!-- boing ↔ lorraine -->
+                <line x1="283" y1="220" x2="150" y2="305" stroke="rgba(94,203,170,0.4)"
+                      style="animation:np-lane 3.5s linear infinite;"/>
+                <!-- boing ↔ aga -->
+                <line x1="338" y1="218" x2="485" y2="185" stroke="rgba(255,136,0,0.35)"
+                      style="animation:np-lane 2.8s linear infinite;"/>
+                <!-- boing ↔ deep -->
+                <line x1="315" y1="252" x2="323" y2="352" stroke="rgba(255,94,91,0.4)"
+                      style="animation:np-lane 4s linear infinite;"/>
+                <!-- lorraine ↔ deep -->
+                <line x1="137" y1="338" x2="303" y2="367" stroke="rgba(136,85,204,0.4)"
+                      style="animation:np-lane 3.2s linear infinite;"/>
+                <!-- aga ↔ deep -->
+                <line x1="495" y1="212" x2="348" y2="365" stroke="rgba(255,136,0,0.35)"
+                      style="animation:np-lane 3.8s linear infinite;"/>
+              </g>
+
+              <!-- ── SECTOR NODES ── -->
+
+              <!-- jminer: 320, 90 -->
+              <g class="np-sector" data-key="jminer" onclick="NexusProtocol.select('jminer')" style="cursor:pointer;">
+                <circle class="adj-ring" cx="320" cy="90" r="34" fill="none"
+                        stroke="rgba(255,209,102,0.7)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                <circle class="sector-node" cx="320" cy="90" r="28"
+                        fill="rgba(10,14,26,0.9)" stroke="#5ECBAA" stroke-width="2"/>
+                <!-- Faction HQ indicator ring -->
+                <circle cx="320" cy="90" r="33" fill="none" stroke="rgba(94,203,170,0.25)"
+                        stroke-width="1" stroke-dasharray="2 4" class="hq-ring-player"/>
+                <circle cx="320" cy="90" r="22" fill="none" stroke="rgba(94,203,170,0.2)" stroke-width="1"/>
+                <text x="320" y="93" font-family="Orbitron,sans-serif" font-size="7" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">JAY</text>
+                <text x="320" y="102" font-family="Orbitron,sans-serif" font-size="6" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">MINER</text>
+                <circle class="owner-dot" cx="320" cy="72" r="4" fill="#5ECBAA" stroke="#5ECBAA" stroke-width="1"/>
+                <text class="unit-count" x="320" y="117" font-family="Share Tech Mono,monospace"
+                      font-size="11" font-weight="700" fill="#5ECBAA" text-anchor="middle"></text>
+                <text x="320" y="128" font-family="Share Tech Mono,monospace" font-size="7"
+                      fill="rgba(255,255,255,0.25)" text-anchor="middle">HQ</text>
+              </g>
+
+              <!-- boing: 310, 230 -->
+              <g class="np-sector" data-key="boing" onclick="NexusProtocol.select('boing')" style="cursor:pointer;">
+                <circle class="adj-ring" cx="310" cy="228" r="38" fill="none"
+                        stroke="rgba(255,209,102,0.7)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                <circle class="sector-node" cx="310" cy="228" r="32"
+                        fill="rgba(10,14,26,0.9)" stroke="#555577" stroke-width="2"/>
+                <circle cx="310" cy="228" r="26" fill="none" stroke="rgba(94,203,170,0.12)" stroke-width="1"/>
+                <circle cx="310" cy="228" r="18" fill="none" stroke="rgba(94,203,170,0.08)" stroke-width="1"/>
+                <text x="310" y="232" font-family="Orbitron,sans-serif" font-size="8" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="1">BOING</text>
+                <circle class="owner-dot" cx="310" cy="208" r="5" fill="#555577" stroke="#555577" stroke-width="1"/>
+                <text class="unit-count" x="310" y="258" font-family="Share Tech Mono,monospace"
+                      font-size="12" font-weight="700" fill="#AAA" text-anchor="middle"></text>
+                <text x="310" y="268" font-family="Share Tech Mono,monospace" font-size="6"
+                      fill="rgba(255,209,102,0.5)" text-anchor="middle">+4 SIG</text>
+              </g>
+
+              <!-- lorraine: 120, 320 -->
+              <g class="np-sector" data-key="lorraine" onclick="NexusProtocol.select('lorraine')" style="cursor:pointer;">
+                <circle class="adj-ring" cx="120" cy="320" r="34" fill="none"
+                        stroke="rgba(255,209,102,0.7)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                <circle class="sector-node" cx="120" cy="320" r="28"
+                        fill="rgba(10,14,26,0.9)" stroke="#555577" stroke-width="2"/>
+                <text x="120" y="318" font-family="Orbitron,sans-serif" font-size="7" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">LORRAINE</text>
+                <text x="120" y="328" font-family="Orbitron,sans-serif" font-size="6" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">CLUSTER</text>
+                <circle class="owner-dot" cx="120" cy="302" r="4" fill="#555577" stroke="#555577" stroke-width="1"/>
+                <text class="unit-count" x="120" y="348" font-family="Share Tech Mono,monospace"
+                      font-size="11" font-weight="700" fill="#AAA" text-anchor="middle"></text>
+                <text x="120" y="358" font-family="Share Tech Mono,monospace" font-size="6"
+                      fill="rgba(94,203,170,0.4)" text-anchor="middle">DEF 3</text>
+              </g>
+
+              <!-- aga: 510, 195 — AI HQ -->
+              <g class="np-sector" data-key="aga" onclick="NexusProtocol.select('aga')" style="cursor:pointer;">
+                <circle class="adj-ring" cx="510" cy="195" r="34" fill="none"
+                        stroke="rgba(255,209,102,0.7)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                <circle class="sector-node" cx="510" cy="195" r="28"
+                        fill="rgba(10,14,26,0.9)" stroke="#FF5E5B" stroke-width="2"/>
+                <!-- AI HQ ring -->
+                <circle cx="510" cy="195" r="33" fill="none" stroke="rgba(255,94,91,0.25)"
+                        stroke-width="1" stroke-dasharray="2 4" class="hq-ring-ai"/>
+                <text x="510" y="192" font-family="Orbitron,sans-serif" font-size="7" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">AGA</text>
+                <text x="510" y="202" font-family="Orbitron,sans-serif" font-size="6" font-weight="700"
+                      fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="0.5">NEBULA</text>
+                <circle class="owner-dot" cx="510" cy="177" r="4" fill="#FF5E5B" stroke="#FF5E5B" stroke-width="1"/>
+                <text class="unit-count" x="510" y="223" font-family="Share Tech Mono,monospace"
+                      font-size="11" font-weight="700" fill="#FF5E5B" text-anchor="middle"></text>
+                <text x="510" y="233" font-family="Share Tech Mono,monospace" font-size="7"
+                      fill="rgba(255,94,91,0.5)" text-anchor="middle">ENEMY HQ</text>
+              </g>
+
+              <!-- deep: 330, 378 -->
+              <g class="np-sector" data-key="deep" onclick="NexusProtocol.select('deep')" style="cursor:pointer;">
+                <circle class="adj-ring" cx="330" cy="378" r="30" fill="none"
+                        stroke="rgba(255,209,102,0.7)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                <circle class="sector-node" cx="330" cy="378" r="24"
+                        fill="rgba(10,14,26,0.9)" stroke="#555577" stroke-width="2"/>
+                <text x="330" y="376" font-family="Orbitron,sans-serif" font-size="6.5" font-weight="700"
+                      fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="0.5">DEEP</text>
+                <text x="330" y="386" font-family="Orbitron,sans-serif" font-size="6" font-weight="700"
+                      fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="0.5">ORBIT</text>
+                <circle class="owner-dot" cx="330" cy="362" r="3.5" fill="#555577" stroke="#555577" stroke-width="1"/>
+                <text class="unit-count" x="330" y="402" font-family="Share Tech Mono,monospace"
+                      font-size="10" font-weight="700" fill="#AAA" text-anchor="middle"></text>
+              </g>
+
+              <!-- Map border -->
+              <rect x="0" y="0" width="640" height="460" fill="none"
+                    stroke="rgba(94,203,170,0.1)" stroke-width="2"/>
+              <text x="8" y="452" font-family="Share Tech Mono,monospace" font-size="7"
+                    fill="rgba(94,203,170,0.25)">NP-SECTOR-CHART</text>
+              <text x="560" y="452" font-family="Share Tech Mono,monospace" font-size="7"
+                    fill="rgba(94,203,170,0.25)">v1.0</text>
+            </svg>
+
+            <!-- Win screen overlay (inside map area) -->
+            <div id="np-win-screen"></div>
+          </div>
+
+          <!-- Right column: sector info + log -->
+          <div id="np-right">
+            <div id="np-side-header">SECTOR INTEL</div>
+            <div id="np-side-panel">
+              <div class="np-panel-hint">Click a sector on the map to inspect it.</div>
+            </div>
+            <div id="np-log-header">COMMS LOG</div>
+            <div id="np-log"></div>
+          </div>
+
+        </div><!-- /#np-arena -->
+
+        <div id="np-statusbar">
+          <span id="np-statusbar-left">Signal: — | Turn: —</span>
+          <span id="np-clock">00:00:00</span>
+          <span id="np-statusbar-right">Phase: —</span>
+        </div>
+
+      </div><!-- /#np-game -->
+
+    </div><!-- /.wb-content -->
+  </div><!-- /.wb-window -->
+</div>
+
+<!-- Universe return -->
+<a href="https://commodoreuniverse.com" class="univ-return" aria-label="Return to Commodore Universe">
+  <div class="univ-return-body">
+    <div class="univ-return-titlebar">
+      <div class="univ-return-gadget"></div>
+      <div class="univ-return-wintitle">Commodore Universe</div>
+    </div>
+    <div class="univ-return-content">
+      <div class="univ-return-cta">Return to Commodore Universe</div>
+      <div class="univ-return-btn">&#9668; &nbsp; LAUNCH HUB</div>
+      <div class="univ-return-url">commodoreuniverse.com</div>
+    </div>
+  </div>
+  <div class="univ-return-ear"><span class="univ-return-ear-text">C= HUB</span></div>
+</a>
+
+<style>
+@keyframes np-lane { to { stroke-dashoffset: -60; } }
+.np-sector:hover .sector-node { opacity: 0.85; }
+</style>
+
+<script src="../js/warp.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/spacepack.js"></script>
+<script src="../js/boing.js"></script>
+<script src="../js/nexus-protocol.js"></script>
+<script>
+  // Clock in statusbar
+  (function () {
+    const el = document.getElementById('np-clock');
+    if (!el) return;
+    function tick() {
+      const d = new Date();
+      el.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
+        .map(v => String(v).padStart(2, '0')).join(':');
+    }
+    tick(); setInterval(tick, 1000);
+  }());
+</script>
+</body>
+</html>

@@ -18,11 +18,13 @@
     { label: 'LOUNGE',     href: '/lounge/',             key: 'lounge' },
     { label: 'MISSION',    href: '/mission-control/',    key: 'mission-control' },
     { label: 'WARP OUT',   href: '/warp-terminal/',      key: 'warp-terminal' },
+    { label: '⚔ COMMAND', href: '/game/',               key: 'game' },
   ];
 
   function currentKey() {
     const p = window.location.pathname;
     if (p === '/map.html' || p === '/map') return 'map';
+    if (p.startsWith('/game')) return 'game';
     const m = p.match(/^\/([^\/]+)\/?/);
     return m ? m[1] : '';
   }
