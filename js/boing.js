@@ -1,5 +1,6 @@
 /* ============================================================
    AMIGA NEXUS — Boing Ball Easter Egg
+   Physics reference: GLFW boing.c (faithful Amiga port)
    Trigger: type "BOING" anywhere (2s inactivity resets buffer)
    Dismiss: Escape key or click anywhere
    ============================================================ */
@@ -25,71 +26,76 @@
   });
 
   // ── State ────────────────────────────────────────────────
-  let overlay  = null;
+  let overlay    = null;
   let mainCanvas = null;
-  let animId   = null;
+  let animId     = null;
 
-  // Physics
+  // Physics (all per-frame at 60fps, scaled with viewport)
   let bx, by, vx, vy, spin;
-  const GRAVITY    = 0.38;
-  const FLOOR_DAMP = 0.76;
-  const SPIN_RATE  = 0.034;
+  let G, R, FLOOR_Y, BASE_VY, BASE_VX;
+
+  function computePhysics(W, H) {
+    R       = Math.floor(H * 0.17);              // ball radius ~17% of height
+    FLOOR_Y = H * 0.86;                          // floor position
+    // Gravity tuned for ~2.5s full bounce cycle at target height of ~68% of FLOOR_Y
+    G       = (2 * FLOOR_Y * 0.68) / (75 * 75); // px/frame², 75 frames = 1.25s half-cycle
+    BASE_VY = Math.sqrt(2 * G * FLOOR_Y * 0.68); // vy needed to reach target height
+    BASE_VX = W / 260;                           // horizontal: ~4.3s to cross at 60fps
+  }
 
   function launch() {
     if (overlay) { dismiss(); return; }
 
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    computePhysics(W, H);
+
     overlay = document.createElement('div');
     overlay.style.cssText =
-      'position:fixed;inset:0;z-index:9999;background:rgba(2,4,14,0.95);' +
-      'display:flex;align-items:center;justify-content:center;' +
-      'overflow:hidden;cursor:pointer;';
+      'position:fixed;inset:0;z-index:9999;overflow:hidden;cursor:pointer;';
 
-    // CRT scanline texture
-    const scan = document.createElement('div');
-    scan.style.cssText =
-      'position:absolute;inset:0;pointer-events:none;' +
-      'background:repeating-linear-gradient(0deg,transparent,transparent 3px,' +
-      'rgba(0,0,0,0.09) 3px,rgba(0,0,0,0.09) 4px);';
+    mainCanvas = document.createElement('canvas');
+    mainCanvas.width  = W;
+    mainCanvas.height = H;
+    mainCanvas.style.cssText = 'position:absolute;inset:0;display:block;';
 
-    // Corner labels — Amiga Workbench aesthetic
+    // Labels
     const label = document.createElement('div');
     label.style.cssText =
-      'position:absolute;top:16px;left:50%;transform:translateX(-50%);' +
-      'font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:4px;' +
-      'color:rgba(94,203,170,0.4);pointer-events:none;white-space:nowrap;';
+      'position:absolute;top:18px;left:50%;transform:translateX(-50%);' +
+      'font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:5px;' +
+      'color:rgba(94,203,170,0.35);pointer-events:none;white-space:nowrap;';
     label.textContent = 'BOING BALL — AMIGA 1984';
 
     const hint = document.createElement('div');
     hint.style.cssText =
-      'position:absolute;bottom:28px;left:50%;transform:translateX(-50%);' +
-      'font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:3px;' +
-      'color:rgba(255,136,0,0.45);pointer-events:none;white-space:nowrap;';
+      'position:absolute;bottom:24px;left:50%;transform:translateX(-50%);' +
+      'font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:4px;' +
+      'color:rgba(255,136,0,0.4);pointer-events:none;white-space:nowrap;';
     hint.textContent = 'ESC TO DISMISS';
 
-    mainCanvas = document.createElement('canvas');
-    const W = Math.min(600, window.innerWidth  - 40);
-    const H = Math.min(500, window.innerHeight - 100);
-    mainCanvas.width  = W;
-    mainCanvas.height = H;
-    mainCanvas.style.cssText = 'display:block;';
+    // CRT scanlines
+    const scan = document.createElement('div');
+    scan.style.cssText =
+      'position:absolute;inset:0;pointer-events:none;' +
+      'background:repeating-linear-gradient(0deg,transparent,transparent 3px,' +
+      'rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);';
 
-    const R = Math.floor(Math.min(W, H) * 0.36);
-
-    // Init physics: start mid-upper area, moving diagonally
-    bx   = W * 0.4;
-    by   = R + 8;
-    vx   = 3.2;
-    vy   = 0;
-    spin = 0;
-
-    overlay.appendChild(scan);
     overlay.appendChild(mainCanvas);
+    overlay.appendChild(scan);
     overlay.appendChild(label);
     overlay.appendChild(hint);
     document.body.appendChild(overlay);
     overlay.addEventListener('click', dismiss);
 
-    animate(R, W, H);
+    // Init: start near floor, first bounce already underway
+    bx   = W * 0.35;
+    by   = FLOOR_Y - R;
+    vx   = BASE_VX * (0.9 + Math.random() * 0.2);
+    vy   = -(BASE_VY * (0.95 + Math.random() * 0.1)); // heading up
+    spin = 0;
+
+    animate(W, H);
   }
 
   function dismiss() {
@@ -103,57 +109,64 @@
   }
 
   // ── Animation loop ───────────────────────────────────────
-  function animate(R, W, H) {
-    const ctx   = mainCanvas.getContext('2d', { alpha: false });
-    const FLOOR = H - 12;
+  function animate(W, H) {
+    const ctx = mainCanvas.getContext('2d', { alpha: false });
 
-    // Background gradient (computed once)
+    // Background: dark navy gradient
     const bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#080C1A');
-    bg.addColorStop(1, '#030507');
+    bg.addColorStop(0, '#08101E');
+    bg.addColorStop(0.6, '#050C18');
+    bg.addColorStop(1, '#030609');
+
+    // Perspective grid (drawn once into an offscreen canvas for speed)
+    const gridCanvas = buildGrid(W, H, FLOOR_Y);
+
+    // Spin rate: ~1.5°/frame = 0.0262 rad/frame (matches GLFW boing.c at 60fps)
+    const SPIN_INC = 0.0262;
 
     function frame() {
-      // Physics
-      vy += GRAVITY;
+      // ── Physics (GLFW boing.c style) ─────────────────────
+      vy += G;
       bx += vx;
       by += vy;
-      spin += SPIN_RATE;
+      spin += SPIN_INC;
 
-      // Walls
-      if (bx - R < 0)  { bx = R;     vx =  Math.abs(vx); }
-      if (bx + R > W)  { bx = W - R; vx = -Math.abs(vx); }
-
-      // Floor
-      if (by + R >= FLOOR) {
-        by = FLOOR - R;
-        vy = -Math.abs(vy) * FLOOR_DAMP;
-        if (Math.abs(vy) < 0.8) vy = -(R * 0.055); // keep bouncing
+      // Wall bounce — GLFW approach: reset vx with small random variation
+      if (bx + R >= W) {
+        bx = W - R;
+        vx = -(BASE_VX * (0.85 + Math.random() * 0.30));
+      }
+      if (bx - R <= 0) {
+        bx = R;
+        vx =  (BASE_VX * (0.85 + Math.random() * 0.30));
       }
 
+      // Floor bounce — GLFW approach: reset vy to consistent height, not true damping
+      if (by + R >= FLOOR_Y) {
+        by = FLOOR_Y - R;
+        vy = -(BASE_VY * (0.92 + Math.random() * 0.10));
+      }
+
+      // ── Draw ─────────────────────────────────────────────
       // Background
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      // Floor line
-      ctx.strokeStyle = 'rgba(94,203,170,0.12)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, FLOOR + R * 0.15);
-      ctx.lineTo(W, FLOOR + R * 0.15);
-      ctx.stroke();
+      // Perspective grid
+      ctx.drawImage(gridCanvas, 0, 0);
 
-      // Shadow: grows as ball approaches floor
-      const floorDist = FLOOR - (by + R);
-      const maxDist   = H;
-      const t         = Math.max(0, 1 - floorDist / maxDist);
-      const sAlpha    = 0.6 * t;
-      const sW        = R * (0.35 + 0.55 * t);
-      const sH        = R * (0.05 + 0.1 * t);
-      if (sAlpha > 0.02) {
+      // Shadow
+      const floorDist = FLOOR_Y - (by + R);
+      const t         = Math.max(0, 1 - floorDist / (H * 0.8));
+      if (t > 0.02) {
+        const sW = R * (0.3 + 0.65 * t);
+        const sH = R * (0.04 + 0.08 * t);
+        ctx.save();
         ctx.beginPath();
-        ctx.ellipse(bx, FLOOR + R * 0.08, sW, sH, 0, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0,0,0,' + sAlpha.toFixed(2) + ')';
+        ctx.ellipse(bx, FLOOR_Y + R * 0.04, sW, sH, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,' + (0.55 * t).toFixed(2) + ')';
         ctx.fill();
+        ctx.restore();
       }
 
       drawBall(ctx, bx, by, R, spin);
@@ -163,6 +176,66 @@
     animId = requestAnimationFrame(frame);
   }
 
+  // ── Perspective floor grid ───────────────────────────────
+  // Matches the characteristic Amiga Boing Ball grid floor
+  function buildGrid(W, H, floorY) {
+    const gc   = document.createElement('canvas');
+    gc.width   = W;
+    gc.height  = H;
+    const gx   = gc.getContext('2d');
+    const COLS = 12;
+    const ROWS = 8;
+    const vp   = { x: W / 2, y: floorY * 0.1 }; // vanishing point
+
+    gx.strokeStyle = 'rgba(94,203,170,0.09)';
+    gx.lineWidth = 1;
+
+    // Horizontal grid lines (receding toward vanishing point)
+    for (let r = 0; r <= ROWS; r++) {
+      const t  = r / ROWS;
+      const y  = floorY + (H - floorY) * t * 1.5;
+      if (y > H) break;
+      const xL = lerp(vp.x, 0, t);
+      const xR = lerp(vp.x, W, t);
+      gx.beginPath();
+      gx.moveTo(xL, y);
+      gx.lineTo(xR, y);
+      gx.stroke();
+    }
+
+    // Vertical grid lines (radiating from vanishing point)
+    for (let c = 0; c <= COLS; c++) {
+      const xBase = (c / COLS) * W;
+      gx.beginPath();
+      gx.moveTo(vp.x, floorY);
+      gx.lineTo(xBase, H * 1.8);
+      gx.stroke();
+    }
+
+    // Subtle back-wall horizontal lines above floor
+    gx.strokeStyle = 'rgba(94,203,170,0.05)';
+    for (let r = 1; r <= 6; r++) {
+      const y = floorY - (floorY * 0.12 * r);
+      if (y < 0) break;
+      gx.beginPath();
+      gx.moveTo(0, y);
+      gx.lineTo(W, y);
+      gx.stroke();
+    }
+
+    // Floor line itself
+    gx.strokeStyle = 'rgba(94,203,170,0.18)';
+    gx.lineWidth = 1.5;
+    gx.beginPath();
+    gx.moveTo(0, floorY);
+    gx.lineTo(W, floorY);
+    gx.stroke();
+
+    return gc;
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
   // ── Sphere renderer ──────────────────────────────────────
   const CHECKER_DIVS = 8;
 
@@ -170,9 +243,7 @@
   let ballCtx    = null;
   let ballImg    = null;
   let ballR      = 0;
-
-  // Precomputed per-row latitude checker band (avoids asin in inner loop)
-  let preLatV = null;
+  let preLatV    = null;
 
   function ensureBallCanvas(ir) {
     if (ballR === ir) return;
@@ -187,13 +258,12 @@
     for (let py = 0; py < size; py++) {
       const ny = (py - ir) / ir;
       if (ny < -1 || ny > 1) { preLatV[py] = -1; continue; }
-      const lat = Math.asin(ny);
-      preLatV[py] = Math.floor((lat * INV_PI + 0.5) * CHECKER_DIVS) & 1;
+      preLatV[py] = Math.floor((Math.asin(ny) * INV_PI + 0.5) * CHECKER_DIVS) & 1;
     }
   }
 
   function drawBall(ctx, cx, cy, r, spinAngle) {
-    const ir = Math.max(1, Math.floor(r));
+    const ir      = Math.max(1, Math.floor(r));
     ensureBallCanvas(ir);
 
     const size    = ir * 2;
@@ -203,46 +273,42 @@
     const cosSpin = Math.cos(spinAngle);
     const sinSpin = Math.sin(spinAngle);
 
-    // Clear alpha to transparent first pass isn't needed — we set every pixel
-
     let idx = 0;
     for (let py = 0; py < size; py++) {
       const dy  = py - ir;
       const dy2 = dy * dy;
-      const cv  = preLatV[py]; // latitude checker band for this row (-1 if outside sphere)
+      const cv  = preLatV[py];
 
       for (let px = 0; px < size; px++, idx += 4) {
         const dx    = px - ir;
         const dist2 = dx * dx + dy2;
 
         if (dist2 > r2 || cv === -1) {
-          // Outside sphere — transparent
           d[idx] = d[idx+1] = d[idx+2] = d[idx+3] = 0;
           continue;
         }
 
-        const nx = dx / ir;
-        const ny = dy / ir;
+        const nx   = dx / ir;
+        const ny   = dy / ir;
         const nzSq = 1 - nx * nx - ny * ny;
         if (nzSq <= 0) { d[idx] = d[idx+1] = d[idx+2] = d[idx+3] = 0; continue; }
         const nz = Math.sqrt(nzSq);
 
-        // Y-axis rotation: rotate (nx, nz) by spinAngle
+        // Y-axis rotation
         const nxR = nx * cosSpin + nz * sinSpin;
         const nzR = -nx * sinSpin + nz * cosSpin;
 
         const lon = Math.atan2(nxR, nzR);
         const u   = ((lon * INV_2PI) % 1 + 1.5) % 1;
         const cu  = Math.floor(u * CHECKER_DIVS * 2) & 1;
-
         const isRed = (cu ^ cv) === 0;
 
-        // Diffuse shading — light from upper-left
-        const light = Math.max(0.12, 0.2 + 0.8 * (nz * 0.85 - ny * 0.3 + nx * -0.1));
+        // Diffuse shading: light from upper-left-front
+        const light = Math.max(0.15, 0.18 + 0.82 * (nz * 0.82 - ny * 0.32 + nx * -0.12));
 
         d[idx+3] = 255;
         if (isRed) {
-          d[idx]   = Math.min(255, (210 * light) | 0);
+          d[idx]   = Math.min(255, (215 * light) | 0);
           d[idx+1] = 0;
           d[idx+2] = 0;
         } else {
