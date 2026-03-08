@@ -10,41 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Rsync files to VPS
+      - name: Deploy to VPS
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete --exclude='.env' --exclude='node_modules' --exclude='.DS_Store'
+          switches: -avz --delete --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='.DS_Store'
           path: ./
           remote_path: /var/www/amiganexus.com/
           remote_host: 159.198.64.231
           remote_user: root
           remote_key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Install server dependencies and restart PM2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 159.198.64.231
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            set -e
-            cd /var/www/amiganexus.com/server
-
-            # Install Bun if not present
-            if ! command -v bun &> /dev/null; then
-              curl -fsSL https://bun.sh/install | bash
-              export PATH="$HOME/.bun/bin:$PATH"
-            fi
-            export PATH="$HOME/.bun/bin:$PATH"
-
-            # Install dependencies
-            bun install --frozen-lockfile
-
-            # Ensure PM2 log directory exists
-            mkdir -p /var/log/pm2
-
-            # Reload or start via PM2
-            cd /var/www/amiganexus.com
-            pm2 reload ecosystem.config.cjs --update-env 2>/dev/null \
-              || pm2 start ecosystem.config.cjs
-            pm2 save
+      - name: Purge Cloudflare cache
+        run: |
+          curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
